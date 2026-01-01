@@ -1,0 +1,78 @@
+Here's a prompt for the design agent:
+
+---
+
+**Create a landing page for a mobile car wash business management app. The design should be clean, professional, and trustworthy—not salesy or manipulative.**
+
+**Core Requirements:**
+- Modern, minimalist design with plenty of white space
+- Mobile-responsive layout
+- Professional color scheme (suggest blues/greens for trust and cleanliness, but open to alternatives)
+- Real functionality—working navigation, smooth scrolling, interactive elements
+
+**Page Structure:**
+
+1. **Hero Section**
+   - App name/logo placeholder
+   - Clear, simple tagline: "Schedule jobs, track routes, manage customers—built for mobile car wash businesses"
+   - Clean screenshot/mockup of the actual app interface (you can use a placeholder phone mockup)
+   - Single primary CTA button: "Try Free for 14 Days"
+
+2. **Features Section**
+   - Grid layout showing 4-6 key features with icons:
+     * Customer & vehicle management
+     * Smart appointment scheduling
+     * Route optimization with maps
+     * Service type configuration
+     * Business hours management
+     * Job tracking & analytics
+   - Each feature: icon + headline + 1-2 sentence honest description
+   - Optional: Phone mockups showing actual app screens for each feature
+
+3. **How It Works** (Simple 3-step process)
+   - Step 1: Add your customers and services
+   - Step 2: Schedule appointments and view optimized routes
+   - Step 3: Track jobs and manage your day
+   - Visual timeline or step indicators
+
+4. **Pricing Section**
+   - Clear, upfront pricing display
+   - Simple pricing card (suggest: "$29/month" or similar with feature list)
+   - "14-day free trial, no credit card required"
+   - Clear about what's included
+
+5. **FAQ Section**
+   - 5-6 common questions in accordion format:
+     * How does route optimization work?
+     * What happens to my data?
+     * Can I cancel anytime?
+     * Is there a setup fee?
+     * What devices does it work on?
+     * Do you offer support?
+
+6. **Final CTA Section**
+   - Simple, clean call-to-action
+   - "Ready to get organized?" or similar non-pushy headline
+   - CTA button + secondary option (like "Have questions? Contact us")
+
+7. **Footer**
+   - Links: Privacy Policy, Terms, Support, Contact
+   - Social media icons (optional)
+   - Copyright info
+
+**Design Principles:**
+- Use real app screenshots or high-quality mockups (not generic stock photos)
+- Typography should be clear and readable (modern sans-serif)
+- No fake urgency tactics (countdown timers, "only X spots left")
+- No aggressive popups or chat widgets
+- Smooth, subtle animations on scroll (not distracting)
+- Proper contrast for accessibility
+- Professional but approachable tone
+
+**Technical:**
+- Single-page HTML with smooth scroll navigation
+- Responsive breakpoints for mobile/tablet/desktop
+- Fast loading, optimized performance
+- Working interactive elements (accordion FAQ, smooth scroll to sections)
+
+**Tone:** Professional, straightforward, helpful—like you're explaining something useful to a colleague, not trying to sell them something.
