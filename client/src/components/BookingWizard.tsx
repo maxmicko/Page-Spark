@@ -118,7 +118,7 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
   const totalPrice = SERVICES.filter(s => formData.selectedServiceIds.includes(s.id)).reduce((acc, s) => acc + s.price, 0);
 
   return (
-    <div className="space-y-6" style={{ fontFamily: styles?.fontFamily }}>
+    <div className="space-y-6" style={{ fontFamily: styles?.fontFamily || 'Inter', color: 'inherit' }}>
       <div className="flex justify-between items-center mb-8">
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="flex items-center gap-2">
@@ -127,7 +127,10 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
                 "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors",
                 step >= i ? "text-white" : "bg-slate-100 text-slate-400"
               )}
-              style={{ backgroundColor: step >= i ? primaryColor : undefined }}
+              style={{ 
+                backgroundColor: step >= i ? primaryColor : undefined,
+                fontFamily: styles?.fontFamily 
+              }}
             >
               {i}
             </div>
@@ -136,10 +139,10 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
         ))}
       </div>
 
-      <div className="min-h-[400px]">
+      <div className="min-h-[400px]" style={{ fontFamily: styles?.fontFamily }}>
         {step === 1 && (
           <div className="grid gap-4">
-            <h3 className="text-lg font-bold">Select Services</h3>
+            <h3 className="text-lg font-bold" style={{ fontFamily: styles?.fontFamily }}>Select Services</h3>
             {SERVICES.map((service) => (
               <div
                 key={service.id}
@@ -150,44 +153,46 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
                 )}
                 style={{ 
                   borderRadius: `${borderRadius}px`,
-                  borderColor: formData.selectedServiceIds.includes(service.id) ? primaryColor : undefined
+                  borderColor: formData.selectedServiceIds.includes(service.id) ? primaryColor : undefined,
+                  fontFamily: styles?.fontFamily
                 }}
               >
-                <div className="flex justify-between font-bold">
+                <div className="flex justify-between font-bold" style={{ fontFamily: styles?.fontFamily }}>
                   <span>{service.name}</span>
                   <span>${service.price}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">{service.description}</p>
+                <p className="text-sm text-muted-foreground" style={{ fontFamily: styles?.fontFamily }}>{service.description}</p>
               </div>
             ))}
           </div>
         )}
 
         {step === 2 && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold">Service Location</h3>
+          <div className="space-y-4" style={{ fontFamily: styles?.fontFamily }}>
+            <h3 className="text-lg font-bold" style={{ fontFamily: styles?.fontFamily }}>Service Location</h3>
             <div className="space-y-2">
-              <Label>Address</Label>
+              <Label style={{ fontFamily: styles?.fontFamily }}>Address</Label>
               <Input 
                 placeholder="Enter your address" 
                 value={formData.address}
                 onChange={e => setValue("address", e.target.value)}
-                style={{ borderRadius: `${borderRadius}px` }}
+                style={{ borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }}
               />
-              {errors.address && <p className="text-xs text-red-500">{errors.address.message}</p>}
+              {errors.address && <p className="text-xs text-red-500" style={{ fontFamily: styles?.fontFamily }}>{errors.address.message}</p>}
             </div>
           </div>
         )}
 
         {step === 3 && (
-          <div className="space-y-6">
-            <h3 className="text-lg font-bold">Date & Time</h3>
+          <div className="space-y-6" style={{ fontFamily: styles?.fontFamily }}>
+            <h3 className="text-lg font-bold" style={{ fontFamily: styles?.fontFamily }}>Date & Time</h3>
             <div className="grid md:grid-cols-2 gap-8">
               <Calendar
                 mode="single"
                 selected={formData.date ? new Date(formData.date) : undefined}
                 onSelect={d => d && setValue("date", format(d, "yyyy-MM-dd"))}
                 className="border rounded-md"
+                style={{ fontFamily: styles?.fontFamily }}
               />
               <div className="grid grid-cols-2 gap-2">
                 {TIME_SLOTS.map(t => (
@@ -198,7 +203,8 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
                     style={{ 
                       borderRadius: `${borderRadius}px`,
                       backgroundColor: formData.time === t ? primaryColor : undefined,
-                      borderColor: formData.time === t ? primaryColor : undefined
+                      borderColor: formData.time === t ? primaryColor : undefined,
+                      fontFamily: styles?.fontFamily
                     }}
                   >
                     {t}
@@ -210,38 +216,38 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
         )}
 
         {step === 4 && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold">Vehicle & Contact</h3>
+          <div className="space-y-4" style={{ fontFamily: styles?.fontFamily }}>
+            <h3 className="text-lg font-bold" style={{ fontFamily: styles?.fontFamily }}>Vehicle & Contact</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Make</Label>
-                <Input value={formData.vehicleInfo.make} onChange={e => setValue("vehicleInfo.make", e.target.value)} style={{ borderRadius: `${borderRadius}px` }} />
+                <Label style={{ fontFamily: styles?.fontFamily }}>Make</Label>
+                <Input value={formData.vehicleInfo.make} onChange={e => setValue("vehicleInfo.make", e.target.value)} style={{ borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }} />
               </div>
               <div className="space-y-2">
-                <Label>Model</Label>
-                <Input value={formData.vehicleInfo.model} onChange={e => setValue("vehicleInfo.model", e.target.value)} style={{ borderRadius: `${borderRadius}px` }} />
+                <Label style={{ fontFamily: styles?.fontFamily }}>Model</Label>
+                <Input value={formData.vehicleInfo.model} onChange={e => setValue("vehicleInfo.model", e.target.value)} style={{ borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }} />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Phone Number</Label>
-              <Input placeholder="(555) 000-0000" value={formData.contactPhone} onChange={e => setValue("contactPhone", e.target.value)} style={{ borderRadius: `${borderRadius}px` }} />
+              <Label style={{ fontFamily: styles?.fontFamily }}>Phone Number</Label>
+              <Input placeholder="(555) 000-0000" value={formData.contactPhone} onChange={e => setValue("contactPhone", e.target.value)} style={{ borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }} />
             </div>
           </div>
         )}
 
         {step === 5 && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold">Review Booking</h3>
-            <div className="bg-slate-50 p-4 rounded-lg space-y-2 text-sm">
-              <div className="flex justify-between">
+          <div className="space-y-4" style={{ fontFamily: styles?.fontFamily }}>
+            <h3 className="text-lg font-bold" style={{ fontFamily: styles?.fontFamily }}>Review Booking</h3>
+            <div className="bg-slate-50 p-4 rounded-lg space-y-2 text-sm" style={{ fontFamily: styles?.fontFamily }}>
+              <div className="flex justify-between" style={{ fontFamily: styles?.fontFamily }}>
                 <span>Services</span>
                 <span className="font-bold">${totalPrice}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between" style={{ fontFamily: styles?.fontFamily }}>
                 <span>Date</span>
                 <span className="font-bold">{formData.date} at {formData.time}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between" style={{ fontFamily: styles?.fontFamily }}>
                 <span>Location</span>
                 <span className="font-bold truncate max-w-[200px]">{formData.address}</span>
               </div>
@@ -252,7 +258,7 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
 
       <div className="flex gap-4 pt-6">
         {step > 1 && (
-          <Button variant="outline" className="flex-1" onClick={() => setStep(s => s - 1)} style={{ borderRadius: `${borderRadius}px` }}>
+          <Button variant="outline" className="flex-1" onClick={() => setStep(s => s - 1)} style={{ borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }}>
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Button>
         )}
@@ -261,7 +267,8 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
           onClick={step === 5 ? handleSubmit(onSubmit) : handleNext}
           style={{ 
             backgroundColor: primaryColor,
-            borderRadius: `${borderRadius}px`
+            borderRadius: `${borderRadius}px`,
+            fontFamily: styles?.fontFamily
           }}
         >
           {step === 5 ? "Confirm Booking" : "Continue"} <ArrowRight className="w-4 h-4 ml-2" />

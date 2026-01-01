@@ -32,13 +32,14 @@ export default function FormBuilder() {
   const [primaryColor, setPrimaryColor] = useState("#0ea5e9");
   const [borderRadius, setBorderRadius] = useState([8]);
   const [fontFamily, setFontFamily] = useState("Inter");
-  const [formId, setFormId] = useState("form_" + Math.random().toString(36).substr(2, 9));
+  const [formName, setFormName] = useState("My Booking Form");
+  const [formId] = useState(() => "form_" + Math.random().toString(36).substr(2, 9));
   const [copied, setCopied] = useState(false);
 
   const embedCode = `<iframe 
-  src="https://orbitl.dash/embed/${formId}?color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${fontFamily}" 
+  src="https://orbitl.dash/embed/${formId}?name=${encodeURIComponent(formName)}&color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${fontFamily}" 
   width="100%" 
-  height="700px" 
+  height="750px" 
   frameborder="0"
 ></iframe>`;
 
@@ -67,18 +68,34 @@ export default function FormBuilder() {
             <Card className="p-6 space-y-8 border-slate-200 shadow-sm">
               <div className="space-y-4">
                 <Label className="flex items-center gap-2 text-slate-600">
+                  <Layout className="w-4 h-4" /> Form Name / ID
+                </Label>
+                <Input 
+                  value={formName} 
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="e.g. Main Website Form"
+                />
+                <div className="text-[10px] font-mono text-slate-400 bg-slate-50 p-2 rounded border truncate">
+                  ID: {formId}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <Label className="flex items-center gap-2 text-slate-600">
                   <Palette className="w-4 h-4" /> Brand Color
                 </Label>
-                <div className="flex gap-2">
-                  <div 
-                    className="w-10 h-10 rounded-lg border shadow-sm shrink-0" 
-                    style={{ backgroundColor: primaryColor }}
+                <div className="flex gap-3">
+                  <input 
+                    type="color" 
+                    value={primaryColor} 
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                    className="w-12 h-12 rounded-lg border-0 shadow-sm cursor-pointer bg-transparent"
                   />
                   <Input 
                     type="text" 
                     value={primaryColor} 
                     onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="font-mono text-sm"
+                    className="font-mono text-sm uppercase flex-1"
                   />
                 </div>
               </div>
@@ -92,10 +109,10 @@ export default function FormBuilder() {
                     <SelectValue placeholder="Select font" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Inter">Inter (Sans)</SelectItem>
-                    <SelectItem value="Outfit">Outfit (Display)</SelectItem>
-                    <SelectItem value="Playfair Display">Playfair (Serif)</SelectItem>
-                    <SelectItem value="JetBrains Mono">JetBrains (Mono)</SelectItem>
+                    <SelectItem value="Inter">Inter (Clean Sans)</SelectItem>
+                    <SelectItem value="Outfit">Outfit (Modern Geometric)</SelectItem>
+                    <SelectItem value="Montserrat">Montserrat (Professional)</SelectItem>
+                    <SelectItem value="Poppins">Poppins (Friendly)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
