@@ -60,17 +60,26 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-              >
-                {link.name}
-              </a>
-            ))}
-            <Button>Start Free Trial</Button>
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-8 mr-4">
+              {navLinks.map((link) => (
+                <a 
+                  key={link.name} 
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+            <div className="flex items-center gap-3 border-l pl-6">
+              <Button variant="ghost" size="sm" className="font-semibold" data-testid="button-login">
+                Log in
+              </Button>
+              <Button size="sm" className="font-semibold shadow-sm" data-testid="button-signup">
+                Sign up
+              </Button>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -103,7 +112,14 @@ const Navbar = () => {
                   {link.name}
                 </a>
               ))}
-              <Button className="w-full mt-2">Start Free Trial</Button>
+              <div className="flex flex-col gap-3 pt-4 border-t mt-2">
+                <Button variant="outline" className="w-full" data-testid="mobile-button-login">
+                  Log in
+                </Button>
+                <Button className="w-full" data-testid="mobile-button-signup">
+                  Sign up
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}
