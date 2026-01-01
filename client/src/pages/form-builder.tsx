@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import BookingWizard from "@/components/BookingWizard";
 
 export default function FormBuilder() {
   const { toast } = useToast();
@@ -37,7 +38,7 @@ export default function FormBuilder() {
   const embedCode = `<iframe 
   src="https://orbitl.dash/embed/${formId}?color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${fontFamily}" 
   width="100%" 
-  height="600px" 
+  height="700px" 
   frameborder="0"
 ></iframe>`;
 
@@ -148,52 +149,14 @@ export default function FormBuilder() {
               </div>
 
               <TabsContent value="preview" className="mt-0">
-                <Card className="p-8 md:p-12 min-h-[600px] bg-white border-slate-200 shadow-sm overflow-hidden relative">
-                  <div className="max-w-md mx-auto space-y-8" style={{ fontFamily }}>
-                    <div className="text-center space-y-2">
-                      <h2 className="text-2xl font-bold">Book Your Wash</h2>
-                      <p className="text-slate-500 text-sm">Select a time and service below</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>Full Name</Label>
-                        <Input placeholder="John Doe" style={{ borderRadius: `${borderRadius}px` }} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Service Type</Label>
-                        <Select>
-                          <SelectTrigger style={{ borderRadius: `${borderRadius}px` }}>
-                            <SelectValue placeholder="Choose service" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="basic">Basic Wash</SelectItem>
-                            <SelectItem value="pro">Full Detail</SelectItem>
-                            <SelectItem value="interior">Interior Only</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label>Date</Label>
-                          <Input type="date" style={{ borderRadius: `${borderRadius}px` }} />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Time</Label>
-                          <Input type="time" style={{ borderRadius: `${borderRadius}px` }} />
-                        </div>
-                      </div>
-                      <Button 
-                        className="w-full h-12 text-white" 
-                        style={{ 
-                          backgroundColor: primaryColor,
-                          borderRadius: `${borderRadius}px`
-                        }}
-                      >
-                        Confirm Booking
-                      </Button>
-                    </div>
-                  </div>
+                <Card className="p-8 md:p-12 min-h-[700px] bg-white border-slate-200 shadow-sm overflow-hidden relative">
+                  <BookingWizard 
+                    styles={{
+                      primaryColor,
+                      borderRadius: borderRadius[0],
+                      fontFamily
+                    }}
+                  />
                   
                   {/* Watermark for preview */}
                   <div className="absolute bottom-4 right-4 text-[10px] text-slate-300 font-mono rotate-[-5deg]">

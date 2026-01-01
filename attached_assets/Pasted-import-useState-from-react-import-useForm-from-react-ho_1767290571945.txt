@@ -1,0 +1,520 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { format } from "date-fns";
+import { useCreateBooking } from "@/hooks/use-bookings";
+import { insertBookingSchema } from "@shared/schema";
+import { StepWizard } from "@/components/StepWizard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { Card } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { 
+  MapPin, 
+  Calendar as CalendarIcon, 
+  Car, 
+  Clock, 
+  Info, 
+  CheckCircle2, 
+  ArrowRight, 
+  ArrowLeft,
+  Loader2,
+  Sparkles
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+// --- Types & Data ---
+
+const SERVICES = [
+  { id: "basic", name: "Basic Wash", price: 30, duration: 30, description: "Exterior wash & dry, tire shine" },
+  { id: "full", name: "Full Detail", price: 120, duration: 120, description: "Deep clean inside & out, clay bar, sealant" },
+  { id: "wax", name: "Waxing", price: 50, duration: 45, description: "Premium carnauba wax application" },
+  { id: "interior", name: "Interior Cleaning", price: 80, duration: 60, description: "Vacuum, shampoo mats, dashboard wipe" },
+];
+
+const TIME_SLOTS = [
+  "08:00", "09:00", "10:00", "11:00", 
+  "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
+];
+
+// --- Form State Schema ---
+// Extending the DB schema to handle intermediate wizard state nicely
+const wizardSchema = insertBookingSchema.extend({
+  selectedServiceIds: z.array(z.string()).min(1, "Select at least one service"),
+  dateObj: z.date({ required_error: "Please select a date" }), // Helper for Calendar component
+});
+
+type WizardFormData = z.infer<typeof wizardSchema>;
+
+export default function BookingWizard() {
+  const [step, setStep] = useState(1);
+  const createBooking = useCreateBooking();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Initialize form
+  const form = useForm<WizardFormData>({
+    resolver: zodResolver(wizardSchema),
+    defaultValues: {
+      selectedServiceIds: [],
+      selectedServices: [],
+      totalPrice: 0,
+      totalDuration: 0,
+      address: "",
+      date: "",
+      time: "",
+      vehicleInfo: { year: "", make: "", model: "", color: "" },
+      notes: "",
+      contactPhone: "",
+      contactMethod: "sms",
+    },
+    mode: "onChange"
+  });
+
+  const { watch, setValue, handleSubmit, trigger, formState: { errors } } = form;
+  const formData = watch();
+
+  // --- Handlers ---
+
+  const handleNext = async () => {
+    let isValid = false;
+    
+    // Validate current step fields
+    switch (step) {
+      case 1:
+        isValid = await trigger("selectedServiceIds");
+        break;
+      case 2:
+        isValid = await trigger("address");
+        break;
+      case 3:
+        isValid = await trigger(["date", "time"]);
+        break;
+      case 4:
+        isValid = await trigger(["vehicleInfo", "contactPhone", "contactMethod"]);
+        break;
+      case 5:
+        isValid = true;
+        break;
+    }
+
+    if (isValid) setStep((s) => s + 1);
+  };
+
+  const handleBack = () => {
+    setStep((s) => Math.max(1, s - 1));
+  };
+
+  const handleServiceToggle = (serviceId: string) => {
+    const current = formData.selectedServiceIds || [];
+    const updated = current.includes(serviceId)
+      ? current.filter(id => id !== serviceId)
+      : [...current, serviceId];
+    
+    setValue("selectedServiceIds", updated);
+    
+    // Update calculated fields
+    const selected = SERVICES.filter(s => updated.includes(s.id));
+    setValue("selectedServices", selected); // Store full objects for JSONB
+    setValue("totalPrice", selected.reduce((sum, s) => sum + s.price, 0));
+    setValue("totalDuration", selected.reduce((sum, s) => sum + s.duration, 0));
+  };
+
+  const handleLocationClick = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        // In a real app, reverse geocode here. For now, simple mock.
+        setValue("address", `Lat: ${position.coords.latitude.toFixed(4)}, Long: ${position.coords.longitude.toFixed(4)} (Near Current Location)`);
+      });
+    }
+  };
+
+  const onSubmit = (data: WizardFormData) => {
+    createBooking.mutate(
+      {
+        ...data,
+        // Ensure strictly matching schema types
+        selectedServices: data.selectedServices,
+        vehicleInfo: data.vehicleInfo,
+      }, 
+      {
+        onSuccess: () => setIsSubmitted(true)
+      }
+    );
+  };
+
+  // --- Render Steps ---
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+        <Card className="max-w-md w-full p-8 text-center space-y-6 shadow-xl border-t-4 border-primary">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600">
+            <CheckCircle2 size={40} />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900">Request Received!</h2>
+          <p className="text-slate-600">
+            Thank you for booking with us. We have received your request for <strong>{formData.date} at {formData.time}</strong>.
+          </p>
+          <p className="text-sm text-slate-500 bg-slate-100 p-3 rounded-lg">
+            A detailer will review your location and confirm the exact arrival time shortly via {formData.contactMethod === 'sms' ? 'SMS' : 'WhatsApp'}.
+          </p>
+          <Button className="w-full" onClick={() => window.location.reload()}>
+            Book Another Service
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 pb-20">
+      <StepWizard 
+        currentStep={step} 
+        totalSteps={5} 
+        title={
+          step === 1 ? "Select Services" :
+          step === 2 ? "Location" :
+          step === 3 ? "Date & Time" :
+          step === 4 ? "Vehicle Details" :
+          "Confirm Booking"
+        }
+        description={
+          step === 1 ? "Choose the package that fits your needs." :
+          step === 2 ? "Where should we meet you?" :
+          step === 3 ? "When works best for you?" :
+          step === 4 ? "Tell us about your car." :
+          "Review your details before sending."
+        }
+      >
+        <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 min-h-[400px]">
+          
+          {/* STEP 1: Services */}
+          {step === 1 && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {SERVICES.map((service) => {
+                  const isSelected = formData.selectedServiceIds?.includes(service.id);
+                  return (
+                    <div
+                      key={service.id}
+                      onClick={() => handleServiceToggle(service.id)}
+                      className={cn(
+                        "cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 hover:shadow-md",
+                        isSelected 
+                          ? "border-primary bg-primary/5 shadow-primary/10" 
+                          : "border-slate-100 hover:border-slate-200 bg-white"
+                      )}
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className={cn("font-bold text-lg", isSelected ? "text-primary" : "text-slate-900")}>
+                          {service.name}
+                        </h3>
+                        {isSelected && <CheckCircle2 className="text-primary w-6 h-6" />}
+                      </div>
+                      <p className="text-slate-500 text-sm mb-4 min-h-[40px]">{service.description}</p>
+                      <div className="flex items-center justify-between text-sm font-medium pt-3 border-t border-slate-100">
+                        <span className="flex items-center text-slate-600">
+                          <Clock className="w-4 h-4 mr-1" /> {service.duration} min
+                        </span>
+                        <span className="text-lg text-slate-900">${service.price}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              <div className="sticky bottom-0 bg-white/95 backdrop-blur pt-4 border-t border-slate-100 mt-6">
+                <div className="flex justify-between items-center text-lg font-bold">
+                  <span>Total Estimate:</span>
+                  <div className="text-right">
+                    <span className="text-primary">${formData.totalPrice}</span>
+                    <span className="text-sm font-normal text-slate-500 block">
+                      {Math.floor(formData.totalDuration / 60)}h {formData.totalDuration % 60}m
+                    </span>
+                  </div>
+                </div>
+                {errors.selectedServiceIds && (
+                  <p className="text-destructive text-sm mt-2 font-medium">Please select at least one service.</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: Location */}
+          {step === 2 && (
+            <div className="space-y-6 max-w-lg mx-auto py-4">
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-base">Service Address</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    id="address"
+                    placeholder="123 Main St, City, Zip"
+                    value={formData.address}
+                    onChange={(e) => setValue("address", e.target.value)}
+                    className="h-12 text-lg"
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-12 w-12 shrink-0"
+                    onClick={handleLocationClick}
+                    title="Use current location"
+                  >
+                    <MapPin className="w-5 h-5 text-primary" />
+                  </Button>
+                </div>
+                {errors.address && <p className="text-destructive text-sm">Address is required</p>}
+              </div>
+
+              <Alert className="bg-amber-50 border-amber-200 text-amber-900">
+                <Info className="h-4 w-4 text-amber-600" />
+                <AlertTitle className="text-amber-800 font-semibold">Travel Time Notice</AlertTitle>
+                <AlertDescription className="text-amber-700">
+                  The detailer needs travel time to reach your location. They will confirm the exact arrival time after accepting your request.
+                </AlertDescription>
+              </Alert>
+              
+              {/* Decorative map placeholder */}
+              <div className="mt-8 rounded-xl bg-slate-100 h-48 flex items-center justify-center border-2 border-dashed border-slate-200">
+                <div className="text-center text-slate-400">
+                  <MapPin className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>Map view would appear here</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: Date & Time */}
+          {step === 3 && (
+            <div className="flex flex-col md:flex-row gap-8 justify-center">
+              <div className="flex-1 max-w-sm mx-auto md:mx-0">
+                <Label className="mb-4 block text-base font-semibold">Select Date</Label>
+                <Calendar
+                  mode="single"
+                  selected={formData.dateObj}
+                  onSelect={(date) => {
+                    if (date) {
+                      setValue("dateObj", date);
+                      setValue("date", format(date, "yyyy-MM-dd"));
+                    }
+                  }}
+                  disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                  className="rounded-xl border shadow-sm p-4 w-full"
+                />
+              </div>
+
+              <div className="flex-1 max-w-sm mx-auto md:mx-0">
+                <Label className="mb-4 block text-base font-semibold">Preferred Start Time</Label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {TIME_SLOTS.map((time) => (
+                    <Button
+                      key={time}
+                      variant={formData.time === time ? "default" : "outline"}
+                      onClick={() => setValue("time", time)}
+                      className={cn(
+                        "w-full",
+                        formData.time === time && "ring-2 ring-primary ring-offset-2"
+                      )}
+                    >
+                      {time}
+                    </Button>
+                  ))}
+                </div>
+                {formData.time && (
+                  <div className="mt-6 p-4 bg-blue-50 text-blue-800 rounded-lg text-sm">
+                    <p className="font-medium">Selected: {formData.date} at {formData.time}</p>
+                    <p className="mt-1 opacity-80 text-xs">This is your preferred start time. Actual arrival may vary slightly.</p>
+                  </div>
+                )}
+                {errors.date && <p className="text-destructive text-sm mt-2">Please select a date</p>}
+                {errors.time && <p className="text-destructive text-sm mt-2">Please select a time</p>}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 4: Vehicle & Contact */}
+          {step === 4 && (
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <Car className="w-5 h-5 text-primary" /> Vehicle Details
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Year</Label>
+                    <Input 
+                      placeholder="2022" 
+                      {...form.register("vehicleInfo.year", { required: true })} 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Make</Label>
+                    <Input 
+                      placeholder="Toyota" 
+                      {...form.register("vehicleInfo.make", { required: true })} 
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Model</Label>
+                    <Input 
+                      placeholder="Camry" 
+                      {...form.register("vehicleInfo.model", { required: true })} 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Color</Label>
+                    <Input 
+                      placeholder="Silver" 
+                      {...form.register("vehicleInfo.color", { required: true })} 
+                    />
+                  </div>
+                </div>
+                {errors.vehicleInfo && <p className="text-destructive text-sm">All vehicle fields are required</p>}
+                
+                <div className="space-y-2 pt-2">
+                  <Label>Special Instructions (Optional)</Label>
+                  <Textarea 
+                    placeholder="Gate code, parking instructions, specific stains..." 
+                    {...form.register("notes")}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <Info className="w-5 h-5 text-primary" /> Contact Info
+                </h3>
+                
+                <div className="space-y-2">
+                  <Label>Phone Number</Label>
+                  <Input 
+                    placeholder="(555) 123-4567" 
+                    type="tel"
+                    {...form.register("contactPhone", { required: "Phone is required" })}
+                  />
+                  {errors.contactPhone && <p className="text-destructive text-sm">{errors.contactPhone.message}</p>}
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Preferred Contact Method</Label>
+                  <RadioGroup 
+                    defaultValue="sms" 
+                    onValueChange={(val) => setValue("contactMethod", val)}
+                    className="flex gap-4"
+                  >
+                    <div className="flex items-center space-x-2 border p-3 rounded-lg flex-1 cursor-pointer hover:bg-slate-50">
+                      <RadioGroupItem value="sms" id="sms" />
+                      <Label htmlFor="sms" className="cursor-pointer">SMS / Text</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 border p-3 rounded-lg flex-1 cursor-pointer hover:bg-slate-50">
+                      <RadioGroupItem value="whatsapp" id="whatsapp" />
+                      <Label htmlFor="whatsapp" className="cursor-pointer">WhatsApp</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 5: Confirmation */}
+          {step === 5 && (
+            <div className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="p-4 bg-slate-50 border-none">
+                  <h4 className="font-semibold text-slate-500 text-sm uppercase tracking-wide mb-3">Service Summary</h4>
+                  <ul className="space-y-2 mb-4">
+                    {formData.selectedServices.map((s: any) => (
+                      <li key={s.id} className="flex justify-between text-sm">
+                        <span>{s.name}</span>
+                        <span className="font-medium">${s.price}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="border-t pt-3 flex justify-between font-bold text-lg">
+                    <span>Total</span>
+                    <span className="text-primary">${formData.totalPrice}</span>
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1 text-right">
+                    Duration: ~{Math.floor(formData.totalDuration / 60)}h {formData.totalDuration % 60}m
+                  </div>
+                </Card>
+
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-slate-500 text-sm uppercase tracking-wide mb-1">Appointment</h4>
+                    <p className="font-medium text-lg">{formData.date}</p>
+                    <p className="text-slate-600">@ {formData.time} (Preferred)</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-500 text-sm uppercase tracking-wide mb-1">Location</h4>
+                    <p className="text-slate-800 break-words">{formData.address}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-500 text-sm uppercase tracking-wide mb-1">Vehicle</h4>
+                    <p className="text-slate-800">
+                      {formData.vehicleInfo.year} {formData.vehicleInfo.make} {formData.vehicleInfo.model} ({formData.vehicleInfo.color})
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-primary/5 p-4 rounded-lg flex gap-3 items-start">
+                <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-primary text-sm">Almost there!</h4>
+                  <p className="text-sm text-slate-600">
+                    By clicking confirm, you agree to our service terms. We will contact you at <strong>{formData.contactPhone}</strong> to confirm the appointment.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Footer */}
+        <div className="mt-8 flex justify-between items-center">
+          <Button
+            variant="ghost"
+            onClick={handleBack}
+            disabled={step === 1 || isSubmitted}
+            className={cn("text-slate-500", step === 1 && "invisible")}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back
+          </Button>
+          
+          {step < 5 ? (
+            <Button 
+              onClick={handleNext} 
+              size="lg"
+              className="px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+            >
+              Next Step <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          ) : (
+            <Button 
+              onClick={handleSubmit(onSubmit)} 
+              disabled={createBooking.isPending || isSubmitted}
+              size="lg"
+              className="px-8 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/25"
+            >
+              {createBooking.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...
+                </>
+              ) : (
+                "Confirm Booking"
+              )}
+            </Button>
+          )}
+        </div>
+      </StepWizard>
+    </div>
+  );
+}
