@@ -343,7 +343,7 @@ const Pricing = () => {
                 "Simple booking flow",
                 "Customer requests",
                 "Basic scheduling",
-                "Route optimized routes",
+                "Website booking form",
                 "Email support"
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3">
@@ -355,14 +355,14 @@ const Pricing = () => {
             <Button variant="outline" className="w-full h-12">Get Started</Button>
           </div>
 
-          {/* Full Plan */}
+          {/* Professional Plan */}
           <div className="bg-primary/5 rounded-3xl p-8 border-2 border-primary flex flex-col shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
               Most Popular
             </div>
             <div className="mb-8">
-              <h3 className="text-xl font-bold mb-2">The Full Thing</h3>
-              <p className="text-muted-foreground text-sm">Everything you need to scale your fleet.</p>
+              <h3 className="text-xl font-bold mb-2">Professional</h3>
+              <p className="text-muted-foreground text-sm">Everything you need to grow your business.</p>
               <div className="flex items-baseline gap-1 mt-4">
                 <span className="text-4xl font-bold text-foreground">$89.99</span>
                 <span className="text-muted-foreground">/month</span>
@@ -370,10 +370,11 @@ const Pricing = () => {
             </div>
             <ul className="space-y-4 mb-8 flex-1">
               {[
-                "Everything in Starter",
+                "Route optimization (Smart Routes)",
                 "Full dashboard analytics",
-                "Multi-staff management",
-                "Advanced service configuration",
+                "Advanced customer profiles",
+                "Previous job & vehicle data",
+                "Smart time-saving schedule",
                 "Priority 24/7 support"
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3">
