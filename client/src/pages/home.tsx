@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Import asset
 import heroImage from "@assets/generated_images/mobile_app_mockup_for_car_wash_management.png";
+import heroVideo from "@assets/generated_videos/cinematic_mobile_car_detailing_montage.mp4";
 
 // --- Components ---
 
@@ -173,12 +174,26 @@ const Hero = () => {
           >
             <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-secondary/50 rounded-[40px] blur-3xl -z-10" />
             
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white bg-white">
-             <img 
-               src={heroImage} 
-               alt="WashMaster App Interface" 
-               className="w-full h-auto object-cover"
-             />
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white bg-white aspect-[16/9] md:aspect-auto">
+              <video 
+                src={heroVideo} 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+            </div>
+            
+            <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-border hidden lg:flex items-center gap-3 animate-bounce-slow">
+              <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <ShieldCheck className="size-6" />
+              </div>
+              <div>
+                <p className="text-sm font-bold">Premium Service</p>
+                <p className="text-xs text-muted-foreground">Certified Detailers</p>
+              </div>
             </div>
             
             {/* Floating elements for depth */}
