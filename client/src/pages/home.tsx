@@ -140,9 +140,6 @@ const Hero = () => {
               <Button size="lg" className="h-12 px-8 text-base">
                 Try Free for 14 Days
               </Button>
-              <Button variant="outline" size="lg" className="h-12 px-8 text-base group">
-                Watch Demo <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
             </div>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Check className="w-4 h-4 text-primary" /> No credit card required

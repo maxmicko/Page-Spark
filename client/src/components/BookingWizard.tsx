@@ -9,15 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { 
-  CheckCircle2, 
-  ArrowRight, 
-  ArrowLeft,
-  Clock,
-  MapPin,
-  Car,
-  ChevronRight
-} from "lucide-react";
+import { Info, CheckCircle2, ArrowRight, ArrowLeft, Clock, MapPin, Car, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SERVICES = [
