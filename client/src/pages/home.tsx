@@ -137,7 +137,7 @@ const Hero = () => {
               OrbitL Dash is the ultimate management platform for mobile car wash professionals. Schedule, route, and grow with ease.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-2">
-              <Button size="lg" className="h-12 px-8 text-base">
+              <Button size="lg" className="h-12 px-8 text-base" data-testid="button-try-free">
                 Try Free for 14 Days
               </Button>
             </div>
