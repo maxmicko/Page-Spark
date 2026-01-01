@@ -147,7 +147,7 @@ const Hero = () => {
               Now available for iOS and Android
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-heading leading-tight text-foreground">
-              Your business, <span className="text-primary">simplified.</span>
+              Mobile detailing, <span className="text-primary">simplified.</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-lg">
               OrbitL Dash is the ultimate management platform for mobile car wash professionals. Schedule, route, and grow with ease.
