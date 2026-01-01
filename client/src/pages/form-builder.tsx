@@ -27,6 +27,27 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import BookingWizard from "@/components/BookingWizard";
 
+const Navbar = () => {
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b shadow-sm">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center gap-2">
+            <div className="size-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
+              O
+            </div>
+            <span className="text-xl font-bold font-heading text-foreground">OrbitL Dash</span>
+          </div>
+          <div className="flex items-center gap-8">
+            <a href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Home</a>
+            <Button size="sm">Dashboard</Button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
 export default function FormBuilder() {
   const { toast } = useToast();
   const [primaryColor, setPrimaryColor] = useState("#0ea5e9");
@@ -54,8 +75,9 @@ export default function FormBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-20">
-      <div className="max-w-[1400px] mx-auto p-4 md:p-8">
+    <div className="min-h-screen bg-slate-50">
+      <Navbar />
+      <div className="max-w-[1400px] mx-auto p-4 md:p-8 pt-32">
         <div className="flex flex-col md:flex-row gap-8">
           
           {/* Sidebar - Controls */}
