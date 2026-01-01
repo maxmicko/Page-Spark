@@ -137,8 +137,11 @@ const Hero = () => {
               OrbitL Dash is the ultimate management platform for mobile car wash professionals. Schedule, route, and grow with ease.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-2">
-              <Button size="lg" className="h-12 px-8 text-base" data-testid="button-try-free">
-                Try Free for 14 Days
+              <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:scale-105 transition-transform" data-testid="button-try-free">
+                Start 3-Day Free Trial
+              </Button>
+              <Button variant="outline" size="lg" className="h-12 px-8 text-base" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
+                See How It Works
               </Button>
             </div>
             <p className="text-sm text-muted-foreground flex items-center gap-2">
@@ -413,7 +416,7 @@ const FAQ = () => {
     },
     {
       question: "Is there a setup fee?",
-      answer: "No setup fees. You get full access to all features during your 14-day free trial, and setup takes just a few minutes."
+      answer: "No setup fees. You get full access to all features during your 3-day free trial, and setup takes just a few minutes."
     },
     {
       question: "What devices does it work on?",
