@@ -131,8 +131,21 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="pt-32 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden">
-      <div className="container mx-auto px-4 md:px-6">
+    <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden min-h-[80vh] flex items-center">
+      {/* Background Video */}
+      <div className="absolute inset-0 -z-20">
+        <video 
+          src={heroVideo} 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
+      </div>
+
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -140,7 +153,7 @@ const Hero = () => {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-start gap-6"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-medium">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium backdrop-blur-md border border-primary/20">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -157,7 +170,7 @@ const Hero = () => {
               <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:scale-105 transition-transform" data-testid="button-try-free">
                 Start 3-Day Free Trial
               </Button>
-              <Button variant="outline" size="lg" className="h-12 px-8 text-base" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
+              <Button variant="outline" size="lg" className="h-12 px-8 text-base bg-background/50 backdrop-blur-sm" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
                 See How It Works
               </Button>
             </div>
@@ -174,16 +187,12 @@ const Hero = () => {
           >
             <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-secondary/50 rounded-[40px] blur-3xl -z-10" />
             
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white bg-white aspect-[16/9] md:aspect-auto">
-              <video 
-                src={heroVideo} 
-                autoPlay 
-                loop 
-                muted 
-                playsInline
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white bg-white">
+             <img 
+               src={heroImage} 
+               alt="WashMaster App Interface" 
+               className="w-full h-auto object-cover"
+             />
             </div>
             
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-border hidden lg:flex items-center gap-3 animate-bounce-slow">
