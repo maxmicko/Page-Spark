@@ -25,7 +25,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Import asset
 import heroImage from "@assets/generated_images/mobile_app_mockup_for_car_wash_management.png";
-import heroVideo from "@assets/generated_videos/slow_motion_car_detailing_background.mp4";
+const heroVideo = "/videos/6873340-hd_1920_1080_25fps.mp4";
 
 // --- Components ---
 
@@ -57,35 +57,35 @@ const Navbar = () => {
             <div className="size-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
               O
             </div>
-            <span className="text-xl font-bold font-heading text-foreground">OrbitL Dash</span>
+            <span className={`text-xl font-bold font-heading ${scrolled ? "text-foreground" : "text-white"}`}>OrbitL Dash</span>
           </div>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
             <div className="flex items-center gap-8 mr-4">
               {navLinks.map((link) => (
-                <a 
-                  key={link.name} 
+                <a
+                  key={link.name}
                   href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  className={`text-sm font-medium ${scrolled ? "text-foreground" : "text-white"} hover:text-primary transition-colors`}
                 >
                   {link.name}
                 </a>
               ))}
             </div>
             <div className="flex items-center gap-3 border-l pl-6">
-              <Button variant="ghost" size="sm" className="font-semibold" data-testid="button-login">
+              <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "" : "text-white"}`} data-testid="button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                 Log in
               </Button>
-              <Button size="sm" className="font-semibold shadow-sm" data-testid="button-signup">
+              <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "" : "text-white"}`} data-testid="button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
                 Sign up
               </Button>
             </div>
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2 text-foreground"
+          <button
+            className={`md:hidden p-2 ${scrolled ? "text-foreground" : "text-white"}`}
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X /> : <Menu />}
@@ -104,20 +104,20 @@ const Navbar = () => {
           >
             <div className="px-4 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
-                <a 
-                  key={link.name} 
+                <a
+                  key={link.name}
                   href={link.href}
-                  className="text-lg font-medium text-foreground py-2"
+                  className={`text-lg font-medium ${scrolled ? "text-foreground" : "text-white"} py-2`}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
                 </a>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t mt-2">
-                <Button variant="outline" className="w-full" data-testid="mobile-button-login">
+                <Button variant="outline" className="w-full" data-testid="mobile-button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                   Log in
                 </Button>
-                <Button className="w-full" data-testid="mobile-button-signup">
+                <Button className="w-full" data-testid="mobile-button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
                   Sign up
                 </Button>
               </div>
@@ -133,16 +133,17 @@ const Hero = () => {
   return (
     <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden min-h-[80vh] flex items-center">
       {/* Background Video */}
-      <div className="absolute inset-0 -z-20">
-        <video 
-          src={heroVideo} 
-          autoPlay 
-          loop 
-          muted 
+      <div className="absolute inset-0 z-0">
+        <video
+          src={heroVideo}
+          autoPlay
+          loop
+          muted
           playsInline
+          preload="auto"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-black/60" />
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -160,21 +161,26 @@ const Hero = () => {
               </span>
               Now available for iOS and Android
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-heading leading-tight text-foreground">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-heading leading-tight text-white">
               Mobile detailing, <span className="text-primary">simplified.</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-lg">
+            <p className="text-lg md:text-xl text-white/90 max-w-lg">
               OrbitL Dash is the ultimate management platform for mobile car wash professionals. Schedule, route, and grow with ease.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-2">
               <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:scale-105 transition-transform" data-testid="button-try-free">
                 Start 3-Day Free Trial
               </Button>
-              <Button variant="outline" size="lg" className="h-12 px-8 text-base bg-background/50 backdrop-blur-sm" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-12 px-8 text-base bg-black/40 text-white border-white/30 backdrop-blur-md hover:bg-black/60"
+                onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+              >
                 See How It Works
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground flex items-center gap-2">
+            <p className="text-sm text-white/80 flex items-center gap-2">
               <Check className="w-4 h-4 text-primary" /> No credit card required
             </p>
           </motion.div>
@@ -201,7 +207,7 @@ const Hero = () => {
               </div>
               <div>
                 <p className="text-sm font-bold">Premium Service</p>
-                <p className="text-xs text-muted-foreground">Certified Detailers</p>
+                <p className="text-xs text-black">Certified Detailers</p>
               </div>
             </div>
             
@@ -217,7 +223,7 @@ const Hero = () => {
                 </div>
                 <div>
                   <p className="text-sm font-semibold">Route Optimized</p>
-                  <p className="text-xs text-muted-foreground">Saved 15 mins</p>
+                  <p className="text-xs text-black">Saved 15 mins</p>
                 </div>
               </div>
             </motion.div>
@@ -269,7 +275,7 @@ const Features = () => {
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4 text-foreground">
             Everything you need to run your mobile business
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-foreground">
             Stop juggling spreadsheets and text messages. OrbitL Dash gives you a professional command center.
           </p>
         </div>
@@ -285,7 +291,7 @@ const Features = () => {
                 {feature.icon}
               </div>
               <h3 className="text-xl font-bold mb-2 font-heading">{feature.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-foreground/80 leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>
@@ -320,7 +326,7 @@ const HowItWorks = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">How it works</h2>
-          <p className="text-lg text-muted-foreground">Get started in three simple steps</p>
+          <p className="text-lg text-foreground">Get started in three simple steps</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 relative">
@@ -333,7 +339,7 @@ const HowItWorks = () => {
                 {step.number}
               </div>
               <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-              <p className="text-muted-foreground max-w-xs">{step.description}</p>
+              <p className="text-foreground max-w-xs">{step.description}</p>
             </div>
           ))}
         </div>
@@ -348,7 +354,7 @@ const Pricing = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">Simple, transparent pricing</h2>
-          <p className="text-lg text-muted-foreground">Choose the plan that fits your business stage.</p>
+          <p className="text-lg text-foreground">Choose the plan that fits your business stage.</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -356,10 +362,10 @@ const Pricing = () => {
           <div className="bg-white rounded-3xl p-8 border border-border flex flex-col shadow-sm relative overflow-hidden">
             <div className="mb-8">
               <h3 className="text-xl font-bold mb-2">Starter</h3>
-              <p className="text-muted-foreground text-sm">Perfect for solo operators just getting started.</p>
+              <p className="text-foreground text-sm">Perfect for solo operators just getting started.</p>
               <div className="flex items-baseline gap-1 mt-4">
                 <span className="text-4xl font-bold text-foreground">$49.99</span>
-                <span className="text-muted-foreground">/month</span>
+                <span className="text-foreground">/month</span>
               </div>
             </div>
             <ul className="space-y-4 mb-8 flex-1">
@@ -381,15 +387,15 @@ const Pricing = () => {
 
           {/* Professional Plan */}
           <div className="bg-primary/5 rounded-3xl p-8 border-2 border-primary flex flex-col shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
+            <div className="absolute top-0 right-0 bg-primary text-foreground text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
               Most Popular
             </div>
             <div className="mb-8">
               <h3 className="text-xl font-bold mb-2">Professional</h3>
-              <p className="text-muted-foreground text-sm">Everything you need to grow your business.</p>
+              <p className="text-foreground text-sm">Everything you need to grow your business.</p>
               <div className="flex items-baseline gap-1 mt-4">
                 <span className="text-4xl font-bold text-foreground">$89.99</span>
-                <span className="text-muted-foreground">/month</span>
+                <span className="text-foreground">/month</span>
               </div>
             </div>
             <ul className="space-y-4 mb-8 flex-1">
@@ -416,20 +422,20 @@ const Pricing = () => {
           <div className="p-8 rounded-3xl bg-secondary/20 border border-secondary flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="text-center md:text-left">
               <h3 className="text-2xl font-bold font-heading mb-2 text-secondary-foreground">Need a Web Presence?</h3>
-              <p className="text-muted-foreground">We offer professional web design and setup services for your business.</p>
+              <p className="text-foreground">We offer professional web design and setup services for your business.</p>
             </div>
             <div className="flex flex-col gap-3 w-full md:w-auto">
               <div className="bg-white p-4 rounded-xl border border-border flex items-center justify-between gap-6">
                 <div>
                   <p className="font-bold text-sm">Custom Website</p>
-                  <p className="text-xs text-muted-foreground">Add to any plan</p>
+                  <p className="text-xs text-black">Add to any plan</p>
                 </div>
                 <p className="font-bold text-primary">+$34.99/mo</p>
               </div>
               <div className="bg-white p-4 rounded-xl border border-border flex items-center justify-between gap-6">
                 <div>
                   <p className="font-bold text-sm">Existing Setup Fee</p>
-                  <p className="text-xs text-muted-foreground">One-time fee</p>
+                  <p className="text-xs text-black">One-time fee</p>
                 </div>
                 <p className="font-bold text-primary">$19.99</p>
               </div>
@@ -482,7 +488,7 @@ const FAQ = () => {
               <AccordionTrigger className="text-left font-semibold text-lg py-4 hover:no-underline hover:text-primary transition-colors">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground pb-4 text-base leading-relaxed">
+              <AccordionContent className="text-foreground pb-4 text-base leading-relaxed">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>
@@ -500,17 +506,17 @@ const CTA = () => {
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
       
       <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
-        <h2 className="text-3xl md:text-5xl font-bold font-heading mb-6 text-white">
+        <h2 className="text-3xl md:text-5xl font-bold font-heading mb-6 text-background">
           Ready to get organized?
         </h2>
-        <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10">
+        <p className="text-xl text-white max-w-2xl mx-auto mb-10">
           Join hundreds of mobile car wash businesses saving time and growing faster with OrbitL Dash.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="h-14 px-8 text-lg bg-primary hover:bg-primary/90 text-white border-0">
+          <Button size="lg" className="h-14 px-8 text-lg bg-primary hover:bg-primary/90 text-foreground border-0">
             Get Started for Free
           </Button>
-          <Button variant="outline" size="lg" className="h-14 px-8 text-lg bg-transparent text-white border-white/20 hover:bg-white/10 hover:text-white">
+          <Button variant="outline" size="lg" className="h-14 px-8 text-lg bg-transparent text-background border-white/20 hover:bg-white/10 hover:text-background">
             Have Questions? Contact Us
           </Button>
         </div>
@@ -531,14 +537,14 @@ const Footer = () => {
               </div>
               <span className="font-bold font-heading text-lg">OrbitL Dash</span>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground">
               The professional dashboard for mobile car wash businesses.
             </p>
           </div>
           
           <div>
             <h4 className="font-semibold mb-4">Product</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 text-sm text-foreground">
               <li><a href="#features" className="hover:text-primary">Features</a></li>
               <li><a href="#pricing" className="hover:text-primary">Pricing</a></li>
               <li><a href="#" className="hover:text-primary">Download App</a></li>
@@ -547,30 +553,24 @@ const Footer = () => {
           
           <div>
             <h4 className="font-semibold mb-4">Company</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary">About Us</a></li>
-              <li><a href="#" className="hover:text-primary">Contact</a></li>
-              <li><a href="#" className="hover:text-primary">Careers</a></li>
+            <ul className="space-y-2 text-sm text-foreground">
+              <li><a href="/about" className="hover:text-primary">About Us</a></li>
+              <li><a href="/contact" className="hover:text-primary">Contact</a></li>
+              <li><a href="/careers" className="hover:text-primary">Careers</a></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-semibold mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-primary">Terms of Service</a></li>
+            <ul className="space-y-2 text-sm text-foreground">
+              <li><a href="/privacy" className="hover:text-primary">Privacy Policy</a></li>
+              <li><a href="/terms" className="hover:text-primary">Terms of Service</a></li>
             </ul>
           </div>
         </div>
         
-        <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>© 2024 OrbitL Dash Inc. All rights reserved.</p>
-          <div className="flex gap-4">
-            {/* Social icons would go here */}
-            <a href="#" className="hover:text-primary">Twitter</a>
-            <a href="#" className="hover:text-primary">Instagram</a>
-            <a href="#" className="hover:text-primary">LinkedIn</a>
-          </div>
+        <div className="pt-8 border-t flex justify-center items-center text-sm text-foreground">
+          <p>© 2026 OrbitL Dash Inc. All rights reserved.</p>
         </div>
       </div>
     </footer>

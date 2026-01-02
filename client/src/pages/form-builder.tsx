@@ -40,7 +40,7 @@ const Navbar = () => {
           </div>
           <div className="flex items-center gap-8">
             <a href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Home</a>
-            <Button size="sm">Dashboard</Button>
+            <Button size="sm" onClick={() => window.location.href = 'https://app.orbitl-dash.us'}>Dashboard</Button>
           </div>
         </div>
       </div>
