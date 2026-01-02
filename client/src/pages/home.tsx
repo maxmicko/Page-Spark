@@ -25,7 +25,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Import asset
 import heroImage from "@assets/generated_images/mobile_app_mockup_for_car_wash_management.png";
-import heroVideo from "@assets/generated_videos/cinematic_mobile_car_detailing_montage.mp4";
+import heroVideo from "@assets/generated_videos/slow_motion_car_detailing_background.mp4";
 
 // --- Components ---
 
