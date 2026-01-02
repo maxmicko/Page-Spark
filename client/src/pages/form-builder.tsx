@@ -33,9 +33,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center gap-2">
-            <div className="size-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
-              O
-            </div>
+            <img src="/favicon.png" alt="Logo" className="size-8" />
             <span className="text-xl font-bold font-heading text-foreground">OrbitL Dash</span>
           </div>
           <div className="flex items-center gap-8">
