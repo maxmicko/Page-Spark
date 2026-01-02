@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Info, CheckCircle2, ArrowRight, ArrowLeft, Clock, MapPin, Car, ChevronRight } from "lucide-react";
+import { Info, CheckCircle2, ArrowRight, ArrowLeft, Clock, MapPin, Car } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SERVICES = [
@@ -45,6 +45,8 @@ type WizardFormData = z.infer<typeof wizardSchema>;
 export default function BookingWizard({ styles }: { styles?: { primaryColor?: string, borderRadius?: number, fontFamily?: string } }) {
   const [step, setStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  
   const primaryColor = styles?.primaryColor || "#0ea5e9";
   const borderRadius = styles?.borderRadius !== undefined ? styles.borderRadius : 12;
 
@@ -73,7 +75,13 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
     if (step === 4) fieldsToValidate = ["vehicleInfo", "contactPhone"];
 
     const isValid = await trigger(fieldsToValidate as any);
-    if (isValid) setStep(s => s + 1);
+    if (isValid) {
+      if (step === 4) {
+        setShowConfirmation(true);
+      } else {
+        setStep(s => s + 1);
+      }
+    }
   };
 
   const handleServiceToggle = (serviceId: string) => {
@@ -84,14 +92,17 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
     setValue("selectedServiceIds", updated);
   };
 
-  const onSubmit = (data: WizardFormData) => {
+  const onSubmit = () => {
     setIsSubmitted(true);
+    setShowConfirmation(false);
   };
+
+  const totalPrice = SERVICES.filter(s => formData.selectedServiceIds.includes(s.id)).reduce((acc, s) => acc + s.price, 0);
 
   if (isSubmitted) {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-        <Card className="p-12 text-center space-y-6 shadow-xl border-none ring-1 ring-slate-200" style={{ borderRadius: `${borderRadius}px` }}>
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center justify-center h-full min-h-[500px]">
+        <Card className="p-8 md:p-12 text-center space-y-6 shadow-xl border-none ring-1 ring-slate-200 w-full max-w-md mx-auto" style={{ borderRadius: `${borderRadius}px` }}>
           <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-10 h-10 text-green-500" />
           </div>
@@ -99,7 +110,7 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
           <p className="text-slate-500 max-w-sm mx-auto" style={{ fontFamily: styles?.fontFamily }}>
             We've received your request for {formData.date} at {formData.time}. A pro will be in touch shortly.
           </p>
-          <Button className="w-full h-12 text-white font-semibold" onClick={() => window.location.reload()} style={{ backgroundColor: primaryColor, borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }}>
+          <Button className="w-full h-12 text-white font-semibold shadow-lg shadow-primary/20" onClick={() => window.location.reload()} style={{ backgroundColor: primaryColor, borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }}>
             Return Home
           </Button>
         </Card>
@@ -107,21 +118,82 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
     );
   }
 
-  const totalPrice = SERVICES.filter(s => formData.selectedServiceIds.includes(s.id)).reduce((acc, s) => acc + s.price, 0);
+  if (showConfirmation) {
+    return (
+      <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col h-full space-y-6">
+        <div className="text-center space-y-2 shrink-0">
+          <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: styles?.fontFamily }}>Review Your Booking</h2>
+          <p className="text-slate-500 text-sm">Please verify the details below.</p>
+        </div>
+
+        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-0 space-y-4">
+          <div className="p-6 bg-slate-900 text-white rounded-2xl space-y-4 shadow-xl">
+            <div className="flex justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                 <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-white/60" />
+                 </div>
+                 <div>
+                    <p className="text-xs text-white/50 uppercase font-bold tracking-widest">Appointment</p>
+                    <p className="font-bold">{formData.date} at {formData.time}</p>
+                 </div>
+              </div>
+              <div className="text-right">
+                 <p className="text-xs text-white/50 uppercase font-bold tracking-widest">Total</p>
+                 <p className="text-xl font-bold" style={{ color: primaryColor }}>${totalPrice}</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm">
+                <MapPin className="w-4 h-4 text-white/40" />
+                <span className="text-white/80 truncate">{formData.address || "No address provided"}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm">
+                <Car className="w-4 h-4 text-white/40" />
+                <span className="text-white/80">{formData.vehicleInfo.make} {formData.vehicleInfo.model}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 bg-amber-50 border border-amber-100 rounded-xl flex gap-3">
+             <Info className="w-5 h-5 text-amber-500 shrink-0" />
+             <p className="text-xs text-amber-800 leading-relaxed">
+                By confirming, you agree to our 24-hour cancellation policy. You can reschedule up to one day before your service.
+             </p>
+          </div>
+        </div>
+
+        <div className="flex gap-3 pt-6 shrink-0 border-t mt-auto">
+          <Button variant="ghost" className="h-12 px-6 font-bold text-slate-500" onClick={() => setShowConfirmation(false)} style={{ borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }}>
+            <ArrowLeft className="w-4 h-4 mr-2" /> Edit Details
+          </Button>
+          <Button 
+            className="flex-1 h-12 text-white font-bold text-lg shadow-lg shadow-primary/20" 
+            onClick={handleSubmit(onSubmit)}
+            style={{ 
+              backgroundColor: primaryColor,
+              borderRadius: `${borderRadius}px`,
+              fontFamily: styles?.fontFamily
+            }}
+          >
+            Confirm & Book Now <CheckCircle2 className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
-    <div className="space-y-8" style={{ fontFamily: styles?.fontFamily || 'Inter' }}>
-      {/* Progress Header */}
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col h-full max-h-[650px]" style={{ fontFamily: styles?.fontFamily || 'Inter' }}>
+      <div className="flex flex-col gap-4 mb-6 shrink-0">
         <div className="flex justify-between items-end">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1 block" style={{ fontFamily: styles?.fontFamily }}>Step {step} of 5</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1 block" style={{ fontFamily: styles?.fontFamily }}>Step {step} of 4</span>
             <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: styles?.fontFamily }}>
               {step === 1 && "Choose Services"}
-              {step === 2 && "Where should we go?"}
-              {step === 3 && "Pick a date & time"}
-              {step === 4 && "About your vehicle"}
-              {step === 5 && "Review & Confirm"}
+              {step === 2 && "Service Location"}
+              {step === 3 && "Pick Date & Time"}
+              {step === 4 && "Vehicle & Contact"}
             </h2>
           </div>
           <div className="text-xl font-bold" style={{ color: primaryColor, fontFamily: styles?.fontFamily }}>
@@ -132,16 +204,16 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
           <div 
             className="h-full transition-all duration-500 ease-out"
             style={{ 
-              width: `${(step / 5) * 100}%`,
+              width: `${(step / 4) * 100}%`,
               backgroundColor: primaryColor
             }}
           />
         </div>
       </div>
 
-      <div className="min-h-[420px]">
+      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar min-h-0">
         {step === 1 && (
-          <div className="grid gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="grid gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-4">
             {SERVICES.map((service) => {
               const isSelected = formData.selectedServiceIds.includes(service.id);
               return (
@@ -175,7 +247,7 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
         )}
 
         {step === 2 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-4">
             <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
                <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-4">
                   <MapPin className="w-6 h-6" style={{ color: primaryColor }} />
@@ -190,14 +262,14 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
                 />
                 {errors.address && <p className="mt-2 text-xs text-red-500 font-medium">{errors.address.message}</p>}
                 <p className="mt-3 text-xs text-slate-400 leading-relaxed">
-                  Our mobile detailers will come directly to your location. Please ensure there is enough space to work around the vehicle.
+                  Our mobile detailers will come directly to your location.
                 </p>
             </div>
           </div>
         )}
 
         {step === 3 && (
-          <div className="grid md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="grid md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-4">
             <div className="space-y-3">
               <Label className="text-sm font-bold text-slate-900">Select Date</Label>
               <Calendar
@@ -209,7 +281,7 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
             </div>
             <div className="space-y-3">
               <Label className="text-sm font-bold text-slate-900">Select Time</Label>
-              <div className="grid grid-cols-2 gap-2 max-h-[340px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {TIME_SLOTS.map(t => (
                   <Button
                     key={t}
@@ -235,7 +307,7 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
         )}
 
         {step === 4 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Make</Label>
@@ -249,49 +321,12 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
             <div className="space-y-2">
               <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Phone Number</Label>
               <Input placeholder="(555) 000-0000" value={formData.contactPhone} onChange={e => setValue("contactPhone", e.target.value)} className="h-12" style={{ borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }} />
-              <p className="text-[10px] text-slate-400">We'll text you 15 minutes before arrival.</p>
-            </div>
-          </div>
-        )}
-
-        {step === 5 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="p-6 bg-slate-900 text-white rounded-2xl space-y-4 shadow-xl">
-              <div className="flex justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-3">
-                   <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-white/60" />
-                   </div>
-                   <div>
-                      <p className="text-xs text-white/50 uppercase font-bold tracking-widest">Appointment</p>
-                      <p className="font-bold">{formData.date} at {formData.time}</p>
-                   </div>
-                </div>
-                <div className="text-right">
-                   <p className="text-xs text-white/50 uppercase font-bold tracking-widest">Total</p>
-                   <p className="text-xl font-bold" style={{ color: primaryColor }}>${totalPrice}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <MapPin className="w-4 h-4 text-white/40" />
-                <span className="text-white/80 truncate">{formData.address || "No address provided"}</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Car className="w-4 h-4 text-white/40" />
-                <span className="text-white/80">{formData.vehicleInfo.make} {formData.vehicleInfo.model}</span>
-              </div>
-            </div>
-            <div className="p-4 bg-amber-50 border border-amber-100 rounded-xl flex gap-3">
-               <Info className="w-5 h-5 text-amber-500 shrink-0" />
-               <p className="text-xs text-amber-800 leading-relaxed">
-                  By confirming, you agree to our 24-hour cancellation policy. You can reschedule up to one day before your service.
-               </p>
             </div>
           </div>
         )}
       </div>
 
-      <div className="flex gap-3 pt-4">
+      <div className="flex gap-3 pt-6 shrink-0 border-t mt-auto">
         {step > 1 && (
           <Button variant="ghost" className="h-12 px-6 font-bold text-slate-500 hover:bg-slate-50" onClick={() => setStep(s => s - 1)} style={{ borderRadius: `${borderRadius}px`, fontFamily: styles?.fontFamily }}>
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -299,14 +334,14 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
         )}
         <Button 
           className="flex-1 h-12 text-white font-bold text-lg shadow-lg shadow-primary/20 hover:scale-[0.99] transition-transform" 
-          onClick={step === 5 ? handleSubmit(onSubmit) : handleNext}
+          onClick={handleNext}
           style={{ 
             backgroundColor: primaryColor,
             borderRadius: `${borderRadius}px`,
             fontFamily: styles?.fontFamily
           }}
         >
-          {step === 5 ? "Confirm Booking" : "Continue"} <ArrowRight className="w-4 h-4 ml-2" />
+          {step === 4 ? "Review Details" : "Continue"} <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </div>
     </div>

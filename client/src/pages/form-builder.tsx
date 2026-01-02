@@ -188,7 +188,7 @@ export default function FormBuilder() {
               </div>
 
               <TabsContent value="preview" className="mt-0">
-                <Card className="p-8 md:p-12 min-h-[700px] bg-white border-slate-200 shadow-sm overflow-hidden relative">
+                <Card className="p-8 md:p-12 min-h-[600px] max-h-[850px] bg-white border-slate-200 shadow-sm overflow-hidden relative flex flex-col">
                   <BookingWizard 
                     styles={{
                       primaryColor,
