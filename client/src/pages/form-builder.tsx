@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { 
-  Settings2, 
-  Palette, 
-  Type, 
-  Layout, 
-  Code2, 
-  Copy, 
-  Check, 
+import {
+  Settings2,
+  Palette,
+  Type,
+  Layout,
+  Code2,
+  Copy,
+  Check,
   ChevronRight,
   Eye
 } from "lucide-react";
@@ -26,10 +26,11 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import BookingWizard from "@/components/BookingWizard";
+import { supabase } from "@/lib/supabase";
 
 const Navbar = () => {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b shadow-sm">
+    <nav className="bg-background/80 backdrop-blur-md border-b shadow-sm">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center gap-2">
@@ -52,15 +53,31 @@ export default function FormBuilder() {
   const [borderRadius, setBorderRadius] = useState([8]);
   const [fontFamily, setFontFamily] = useState("Inter");
   const [formName, setFormName] = useState("My Booking Form");
-  const [formId] = useState(() => "form_" + Math.random().toString(36).substr(2, 9));
+  const [bookingId, setBookingId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [user, setUser] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  const embedCode = `<iframe 
-  src="https://orbitl.dash/embed/${formId}?name=${encodeURIComponent(formName)}&color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${fontFamily}" 
-  width="100%" 
-  height="750px" 
-  frameborder="0"
-></iframe>`;
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      setUser(user);
+      if (user) {
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('booking_id')
+          .eq('id', user.id)
+          .single();
+        setBookingId(profile?.booking_id || null);
+      }
+    });
+  }, []);
+
+  const embedCode = bookingId ? `<iframe
+   src="${window.location.origin}/embed?bookingId=${bookingId}&color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${encodeURIComponent(fontFamily)}"
+   width="100%"
+   height="750px"
+   frameborder="0"
+ ></iframe>` : 'Please log in to generate embed code';
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(embedCode);
@@ -75,7 +92,7 @@ export default function FormBuilder() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
-      <div className="max-w-[1400px] mx-auto p-4 md:p-8 pt-32">
+      <div className="max-w-[1400px] mx-auto p-4 md:p-8">
         <div className="flex flex-col md:flex-row gap-8">
           
           {/* Sidebar - Controls */}
@@ -96,7 +113,7 @@ export default function FormBuilder() {
                   placeholder="e.g. Main Website Form"
                 />
                 <div className="text-[10px] font-mono text-slate-400 bg-slate-50 p-2 rounded border truncate">
-                  ID: {formId}
+                  Booking ID: {bookingId || 'Not available'}
                 </div>
               </div>
 
@@ -153,17 +170,9 @@ export default function FormBuilder() {
               </div>
 
               <div className="pt-4 border-t">
-                <Button 
-                  className="w-full gap-2" 
-                  onClick={() => {
-                    toast({
-                      title: "Form Saved",
-                      description: "Your customizations have been saved to " + formId,
-                    });
-                  }}
-                >
-                  Save Configuration
-                </Button>
+                <p className="text-xs text-slate-500 text-center">
+                  Styles are applied via URL parameters in the embed code
+                </p>
               </div>
             </Card>
           </aside>
@@ -181,7 +190,7 @@ export default function FormBuilder() {
                   </TabsTrigger>
                 </TabsList>
                 <div className="text-xs text-slate-400 font-mono hidden md:block">
-                  ID: {formId}
+                  Booking ID: {bookingId || 'Not available'}
                 </div>
               </div>
 

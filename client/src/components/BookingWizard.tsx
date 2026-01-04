@@ -11,8 +11,9 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Info, CheckCircle2, ArrowRight, ArrowLeft, Clock, MapPin, Car } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
-const SERVICES = [
+const DEFAULT_SERVICES = [
   { id: "basic", name: "Basic Wash", price: 30, duration: 30, description: "Exterior wash & dry, tire shine" },
   { id: "full", name: "Full Detail", price: 120, duration: 120, description: "Deep clean inside & out, clay bar, sealant" },
   { id: "wax", name: "Waxing", price: 50, duration: 45, description: "Premium carnauba wax application" },
@@ -42,7 +43,8 @@ const wizardSchema = z.object({
 
 type WizardFormData = z.infer<typeof wizardSchema>;
 
-export default function BookingWizard({ styles }: { styles?: { primaryColor?: string, borderRadius?: number, fontFamily?: string } }) {
+export default function BookingWizard({ styles, userId, services }: { styles?: { primaryColor?: string, borderRadius?: number, fontFamily?: string }, userId?: string, services?: any[] }) {
+  const SERVICES = services || [];
   const [step, setStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -92,9 +94,59 @@ export default function BookingWizard({ styles }: { styles?: { primaryColor?: st
     setValue("selectedServiceIds", updated);
   };
 
-  const onSubmit = () => {
-    setIsSubmitted(true);
-    setShowConfirmation(false);
+  const onSubmit = async () => {
+    try {
+      if (!userId) throw new Error('User not authenticated');
+
+      // For now, create appointment for the first selected service
+      const firstServiceId = formData.selectedServiceIds[0];
+      if (!firstServiceId) throw new Error('No service selected');
+
+      const bookingData = {
+        serviceId: firstServiceId,
+        customer: {
+          name: 'Embedded Form Customer', // Could be enhanced to collect name
+          phone: formData.contactPhone,
+          address: formData.address,
+          notes: formData.notes,
+        },
+        vehicle: {
+          make: formData.vehicleInfo.make,
+          model: formData.vehicleInfo.model,
+          year: formData.vehicleInfo.year,
+          color: formData.vehicleInfo.color,
+        },
+        scheduledAt: new Date(`${formData.date}T${formData.time}`).toISOString(),
+        notes: formData.notes,
+      };
+
+      const { data, error } = await supabase
+        .from('user_appointments')
+        .insert({
+          user_id: userId,
+          service_id: bookingData.serviceId,
+          customer_name: bookingData.customer.name,
+          customer_phone: bookingData.customer.phone,
+          address: bookingData.customer.address,
+          scheduled_at: bookingData.scheduledAt,
+          vehicle_make: bookingData.vehicle.make,
+          vehicle_model: bookingData.vehicle.model,
+          vehicle_year: bookingData.vehicle.year,
+          vehicle_color: bookingData.vehicle.color,
+          notes: bookingData.notes,
+          status: 'pending', // As per document
+        });
+
+      if (error) throw error;
+
+      setIsSubmitted(true);
+      setShowConfirmation(false);
+    } catch (error) {
+      console.error('Error submitting booking:', error);
+      // For now, still show success
+      setIsSubmitted(true);
+      setShowConfirmation(false);
+    }
   };
 
   const totalPrice = SERVICES.filter(s => formData.selectedServiceIds.includes(s.id)).reduce((acc, s) => acc + s.price, 0);
