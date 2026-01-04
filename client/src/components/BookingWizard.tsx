@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Info, CheckCircle2, ArrowRight, ArrowLeft, Clock, MapPin, Car } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/lib/supabase";
+import { createPendingAppointment } from "../shared/booking";
 
 const DEFAULT_SERVICES = [
   { id: "basic", name: "Basic Wash", price: 30, duration: 30, description: "Exterior wash & dry, tire shine" },
@@ -44,7 +44,7 @@ const wizardSchema = z.object({
 type WizardFormData = z.infer<typeof wizardSchema>;
 
 export default function BookingWizard({ styles, userId, services }: { styles?: { primaryColor?: string, borderRadius?: number, fontFamily?: string }, userId?: string, services?: any[] }) {
-  const SERVICES = services || [];
+  const SERVICES = userId ? (services || []) : DEFAULT_SERVICES;
   const [step, setStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -120,24 +120,7 @@ export default function BookingWizard({ styles, userId, services }: { styles?: {
         notes: formData.notes,
       };
 
-      const { data, error } = await supabase
-        .from('user_appointments')
-        .insert({
-          user_id: userId,
-          service_id: bookingData.serviceId,
-          customer_name: bookingData.customer.name,
-          customer_phone: bookingData.customer.phone,
-          address: bookingData.customer.address,
-          scheduled_at: bookingData.scheduledAt,
-          vehicle_make: bookingData.vehicle.make,
-          vehicle_model: bookingData.vehicle.model,
-          vehicle_year: bookingData.vehicle.year,
-          vehicle_color: bookingData.vehicle.color,
-          notes: bookingData.notes,
-          status: 'pending', // As per document
-        });
-
-      if (error) throw error;
+      await createPendingAppointment(userId, bookingData);
 
       setIsSubmitted(true);
       setShowConfirmation(false);

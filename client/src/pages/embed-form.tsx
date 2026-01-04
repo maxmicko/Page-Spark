@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import BookingWizard from "@/components/BookingWizard";
-import { supabase } from "@/lib/supabase";
 
 const DEFAULT_SERVICES = [
   { id: "basic", name: "Basic Wash", price: 30, duration: 30, description: "Exterior wash & dry, tire shine" },
@@ -36,22 +35,33 @@ export default function EmbedForm() {
       }
 
       // Get user by bookingId
-      const { data: userData, error: userError } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('booking_id', bookingId)
-        .single();
-
-      if (userError || !userData) {
+      const userResponse = await fetch(`https://gfpidktpzubpcsqlvxcq.supabase.co/rest/v1/user_profiles?select=*&booking_id=eq.${bookingId}`, {
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmcGlka3RwenVicGNzcWx2eGNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMDk4NzYsImV4cCI6MjA4MTg4NTg3Nn0.lujAhtphHMLMVXSS6XMEGfoBbPo6jNeTyXJoiBO7RJY',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmcGlka3RwenVicGNzcWx2eGNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMDk4NzYsImV4cCI6MjA4MTg4NTg3Nn0.lujAhtphHMLMVXSS6XMEGfoBbPo6jNeTyXJoiBO7RJY'
+        }
+      });
+      if (!userResponse.ok) {
         setError('Invalid booking ID');
         setLoading(false);
         return;
       }
-
+      const userDataArray = await userResponse.json();
+      if (!userDataArray || userDataArray.length === 0) {
+        setError('Invalid booking ID');
+        setLoading(false);
+        return;
+      }
+      const userData = userDataArray[0];
       setUser(userData);
 
       // Get services for the user
-      const servicesResponse = await fetch(`https://gfpidktpzubpcsqlvxcq.supabase.co/rest/v1/user_services?select=*&user_id=eq.${userData.id}&apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmcGlka3RwenVicGNzcWx2eGNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMDk4NzYsImV4cCI6MjA4MTg4NTg3Nn0.lujAhtphHMLMVXSS6XMEGfoBbPo6jNeTyXJoiBO7RJY`);
+      const servicesResponse = await fetch(`https://gfpidktpzubpcsqlvxcq.supabase.co/rest/v1/user_services?select=*&user_id=eq.${userData.id}`, {
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmcGlka3RwenVicGNzcWx2eGNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMDk4NzYsImV4cCI6MjA4MTg4NTg3Nn0.lujAhtphHMLMVXSS6XMEGfoBbPo6jNeTyXJoiBO7RJY',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmcGlka3RwenVicGNzcWx2eGNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMDk4NzYsImV4cCI6MjA4MTg4NTg3Nn0.lujAhtphHMLMVXSS6XMEGfoBbPo6jNeTyXJoiBO7RJY'
+        }
+      });
       if (!servicesResponse.ok) {
         console.error('Error loading services:', servicesResponse.statusText);
         setServices([]);
