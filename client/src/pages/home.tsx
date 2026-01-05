@@ -561,6 +561,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-foreground">
               <li><a href="/privacy" className="hover:text-primary">Privacy Policy</a></li>
               <li><a href="/terms" className="hover:text-primary">Terms of Service</a></li>
+              <li><a href="/refund-policy" className="hover:text-primary">Refund Policy</a></li>
             </ul>
           </div>
         </div>

@@ -56,16 +56,7 @@ export default function Terms() {
               We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever,
               including without limitation if you breach the Terms.
             </p>
-            
-            <h2>Refund Policy</h2>
-            <p>
-              Refunds may be requested within 14 days of purchase for eligible services. Please contact us at{" "}
-              <a href="mailto:max@orbitl.cc" className="text-primary hover:underline">
-                max@orbitl.cc
-              </a>{" "}
-              to discuss your refund request.
-            </p>
-            
+
             <h2>Contact Information</h2>
             <p>
               If you have any questions about these Terms of Service, please contact us at{" "}

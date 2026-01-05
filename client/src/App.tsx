@@ -12,6 +12,8 @@ import Contact from "@/pages/contact";
 import Careers from "@/pages/careers";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
+import Pricing from "@/pages/pricing";
+import RefundPolicy from "@/pages/refund-policy";
 
 function Router() {
   return (
@@ -24,6 +26,8 @@ function Router() {
       <Route path="/careers" component={Careers} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
+      <Route path="/pricing" component={Pricing} />
+      <Route path="/refund-policy" component={RefundPolicy} />
       <Route component={NotFound} />
     </Switch>
   );
