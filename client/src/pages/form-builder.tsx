@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import type { User } from '@supabase/supabase-js';
 import {
   Settings2,
   Palette,
@@ -53,9 +54,10 @@ export default function FormBuilder() {
   const [borderRadius, setBorderRadius] = useState([8]);
   const [fontFamily, setFontFamily] = useState("Inter");
   const [formName, setFormName] = useState("My Booking Form");
-  const [bookingId, setBookingId] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState("Premium Car Wash");
+  const [bookingId, setBookingId] = useState<string>("");
   const [copied, setCopied] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -67,17 +69,19 @@ export default function FormBuilder() {
           .select('booking_id')
           .eq('id', user.id)
           .single();
-        setBookingId(profile?.booking_id || null);
+        if (profile?.booking_id) {
+          setBookingId(profile.booking_id);
+        }
       }
     });
   }, []);
 
   const embedCode = bookingId ? `<iframe
-   src="${window.location.origin}/embed?bookingId=${bookingId}&color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${encodeURIComponent(fontFamily)}"
-   width="100%"
-   height="750px"
-   frameborder="0"
- ></iframe>` : 'Please log in to generate embed code';
+    src="${window.location.origin}/embed?bookingId=${bookingId}&color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${encodeURIComponent(fontFamily)}"
+    width="100%"
+    height="750px"
+    frameborder="0"
+  ></iframe>` : 'Please enter your booking ID to generate embed code';
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(embedCode);
@@ -105,15 +109,32 @@ export default function FormBuilder() {
             <Card className="p-6 space-y-8 border-slate-200 shadow-sm">
               <div className="space-y-4">
                 <Label className="flex items-center gap-2 text-slate-600">
-                  <Layout className="w-4 h-4" /> Form Name / ID
+                  <Layout className="w-4 h-4" /> Business Name
                 </Label>
-                <Input 
-                  value={formName} 
+                <Input
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  placeholder="e.g. Premium Car Wash"
+                />
+                <Label className="flex items-center gap-2 text-slate-600">
+                  <Layout className="w-4 h-4" /> Form Name
+                </Label>
+                <Input
+                  value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="e.g. Main Website Form"
                 />
+                <Label className="flex items-center gap-2 text-slate-600">
+                  <Layout className="w-4 h-4" /> Booking ID
+                </Label>
+                <Input
+                  value={bookingId}
+                  onChange={(e) => setBookingId(e.target.value)}
+                  placeholder="Paste your booking ID here"
+                  className="font-mono text-sm"
+                />
                 <div className="text-[10px] font-mono text-slate-400 bg-slate-50 p-2 rounded border truncate">
-                  Booking ID: {bookingId || 'Not available'}
+                  {user ? 'Booking ID loaded from your account' : 'Enter your booking ID above to generate embed code'}
                 </div>
               </div>
 
@@ -190,18 +211,19 @@ export default function FormBuilder() {
                   </TabsTrigger>
                 </TabsList>
                 <div className="text-xs text-slate-400 font-mono hidden md:block">
-                  Booking ID: {bookingId || 'Not available'}
+                  Booking ID: {bookingId || 'Not set'}
                 </div>
               </div>
 
               <TabsContent value="preview" className="mt-0">
                 <Card className="p-8 md:p-12 min-h-[600px] max-h-[850px] bg-white border-slate-200 shadow-sm overflow-hidden relative flex flex-col">
-                  <BookingWizard 
+                  <BookingWizard
                     styles={{
                       primaryColor,
                       borderRadius: borderRadius[0],
                       fontFamily
                     }}
+                    businessName={businessName}
                   />
                   
                   {/* Watermark for preview */}

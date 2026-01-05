@@ -111,10 +111,11 @@ export default function EmbedForm() {
   const primaryColor = urlParams.get('color') || '#0ea5e9';
   const borderRadius = parseInt(urlParams.get('radius') || '8');
   const fontFamily = urlParams.get('font') || 'Inter';
+  const businessName = user?.full_name || user?.name || user?.business_name || user?.company_name || 'Your Business';
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto">
         <BookingWizard
           styles={{
             primaryColor,
@@ -123,6 +124,7 @@ export default function EmbedForm() {
           }}
           userId={user?.id}
           services={services}
+          businessName={businessName}
         />
       </div>
     </div>

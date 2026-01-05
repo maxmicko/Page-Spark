@@ -47,10 +47,10 @@ export async function getAvailableSlots(userId: string, date: Date, serviceDurat
 
   const { data: appointments, error } = await supabase
     .from('user_appointments')
-    .select('scheduled_at, service_id')
+    .select('start_time, service_id')
     .eq('user_id', userId)
-    .gte('scheduled_at', startOfDay.toISOString())
-    .lte('scheduled_at', endOfDay.toISOString())
+    .gte('start_time', startOfDay.toISOString())
+    .lte('start_time', endOfDay.toISOString())
     .in('status', ['confirmed', 'scheduled', 'active']);
 
   if (error) throw error;
@@ -71,7 +71,7 @@ export async function getAvailableSlots(userId: string, date: Date, serviceDurat
 
     // Check if slot conflicts with existing appointments
     const conflict = appointments.some(apt => {
-      const aptTime = new Date(apt.scheduled_at);
+      const aptTime = new Date(apt.start_time);
       const aptEnd = new Date(aptTime);
       aptEnd.setMinutes(aptEnd.getMinutes() + serviceDuration); // Assuming service duration for existing apt
 
@@ -98,7 +98,7 @@ export async function createPendingAppointment(userId: string, bookingData: any)
       customer_name: bookingData.customer.name,
       customer_phone: bookingData.customer.phone,
       address: bookingData.customer.address,
-      scheduled_at: bookingData.scheduledAt,
+      start_time: bookingData.scheduledAt,
       vehicle_make: bookingData.vehicle.make,
       vehicle_model: bookingData.vehicle.model,
       vehicle_year: bookingData.vehicle.year,

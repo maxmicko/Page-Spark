@@ -94,15 +94,18 @@ export async function createPendingAppointment(userId: string, bookingData: any)
     .from('user_appointments')
     .insert({
       user_id: userId,
-      service_id: bookingData.serviceId,
       customer_name: bookingData.customer.name,
       customer_phone: bookingData.customer.phone,
       address: bookingData.customer.address,
       scheduled_at: bookingData.scheduledAt,
+      latitude: bookingData.latitude,
+      longitude: bookingData.longitude,
+      service_id: bookingData.serviceId,
       vehicle_make: bookingData.vehicle.make,
       vehicle_model: bookingData.vehicle.model,
       vehicle_year: bookingData.vehicle.year,
       vehicle_color: bookingData.vehicle.color,
+      license_plate: bookingData.vehicle.license_plate,
       notes: bookingData.notes,
       status: 'pending'
     })
