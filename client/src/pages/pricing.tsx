@@ -1,8 +1,80 @@
 import { Link } from "wouter";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { createCheckoutSession } from "@/lib/polar";
+
+const plans = [
+  {
+    id: 'basic',
+    name: 'Basic',
+    price: '$49.99',
+    description: 'Perfect for solo operators just getting started.',
+    features: [
+      "Simple booking flow",
+      "Customer requests",
+      "Basic scheduling",
+      "Website booking form",
+      "Email support"
+    ],
+    popular: false,
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    price: '$89.99',
+    description: 'Everything you need to grow your business.',
+    features: [
+      "Route optimization (Smart Routes)",
+      "Full dashboard analytics",
+      "Advanced customer profiles",
+      "Previous job & vehicle data",
+      "Smart time-saving schedule",
+      "Priority 24/7 support"
+    ],
+    popular: true,
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    price: '$149.99',
+    description: 'Advanced features for large teams.',
+    features: [
+      "All Pro features",
+      "Multi-user access",
+      "Custom integrations",
+      "Dedicated account manager",
+      "SLA guarantee",
+      "Phone support"
+    ],
+    popular: false,
+  },
+];
 
 export default function Pricing() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+  }, []);
+
+  const handleCheckout = async (planId: string) => {
+    if (!user) return;
+
+    setLoading(planId);
+
+    try {
+      await createCheckoutSession({ id: planId }, { email: user.email });
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+    } finally {
+      setLoading(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-16 max-w-6xl">
@@ -11,64 +83,45 @@ export default function Pricing() {
           <p className="text-lg text-foreground">Choose the plan that fits your business stage.</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
-          {/* Starter Plan */}
-          <div className="bg-white rounded-3xl p-8 border border-border flex flex-col shadow-sm relative overflow-hidden">
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-2">Starter</h3>
-              <p className="text-foreground text-sm">Perfect for solo operators just getting started.</p>
-              <div className="flex items-baseline gap-1 mt-4">
-                <span className="text-4xl font-bold text-foreground">$49.99</span>
-                <span className="text-foreground">/month</span>
+        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+          {plans.map((plan) => (
+            <div
+              key={plan.id}
+              className={`bg-white rounded-3xl p-8 border flex flex-col shadow-sm relative overflow-hidden ${
+                plan.popular ? 'border-2 border-primary shadow-xl bg-primary/5' : 'border-border'
+              }`}
+            >
+              {plan.popular && (
+                <div className="absolute top-0 right-0 bg-primary text-foreground text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
+                  Most Popular
+                </div>
+              )}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                <p className="text-foreground text-sm">{plan.description}</p>
+                <div className="flex items-baseline gap-1 mt-4">
+                  <span className="text-4xl font-bold text-foreground">{plan.price}</span>
+                  <span className="text-foreground">/month</span>
+                </div>
               </div>
+              <ul className="space-y-4 mb-8 flex-1">
+                {plan.features.map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-primary shrink-0" />
+                    <span className="text-sm font-medium">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                variant={plan.popular ? "default" : "outline"}
+                className={`w-full h-12 ${plan.popular ? 'shadow-lg shadow-primary/20' : ''}`}
+                onClick={() => handleCheckout(plan.id)}
+                disabled={!user || loading !== null}
+              >
+                {loading === plan.id ? 'Loading...' : 'Get Started'}
+              </Button>
             </div>
-            <ul className="space-y-4 mb-8 flex-1">
-              {[
-                "Simple booking flow",
-                "Customer requests",
-                "Basic scheduling",
-                "Website booking form",
-                "Email support"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-primary shrink-0" />
-                  <span className="text-sm font-medium">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <Button variant="outline" className="w-full h-12">Get Started</Button>
-          </div>
-
-          {/* Professional Plan */}
-          <div className="bg-primary/5 rounded-3xl p-8 border-2 border-primary flex flex-col shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-primary text-foreground text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
-              Most Popular
-            </div>
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-2">Professional</h3>
-              <p className="text-foreground text-sm">Everything you need to grow your business.</p>
-              <div className="flex items-baseline gap-1 mt-4">
-                <span className="text-4xl font-bold text-foreground">$89.99</span>
-                <span className="text-foreground">/month</span>
-              </div>
-            </div>
-            <ul className="space-y-4 mb-8 flex-1">
-              {[
-                "Route optimization (Smart Routes)",
-                "Full dashboard analytics",
-                "Advanced customer profiles",
-                "Previous job & vehicle data",
-                "Smart time-saving schedule",
-                "Priority 24/7 support"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-primary shrink-0" />
-                  <span className="text-sm font-medium">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <Button className="w-full h-12 shadow-lg shadow-primary/20">Get Started</Button>
-          </div>
+          ))}
         </div>
 
         {/* Add-on Services */}

@@ -75,9 +75,11 @@ const Navbar = () => {
               <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "" : "text-white"}`} data-testid="button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                 Log in
               </Button>
-              <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "" : "text-white"}`} data-testid="button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
-                Sign up
-              </Button>
+              <Link href="/signup">
+                <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "" : "text-white"}`} data-testid="button-signup">
+                  Sign up
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -115,9 +117,11 @@ const Navbar = () => {
                 <Button variant="outline" className="w-full" data-testid="mobile-button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                   Log in
                 </Button>
-                <Button className="w-full" data-testid="mobile-button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
-                  Sign up
-                </Button>
+                <Link href="/signup">
+                  <Button className="w-full" data-testid="mobile-button-signup">
+                    Sign up
+                  </Button>
+                </Link>
               </div>
             </div>
           </motion.div>
