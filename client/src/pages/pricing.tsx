@@ -36,7 +36,9 @@ export default function Pricing() {
                 </li>
               ))}
             </ul>
-            <Button variant="outline" className="w-full h-12">Get Started</Button>
+            <a href="https://app.orbitl-dash.us/subscription" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" className="w-full h-12">Get Started</Button>
+            </a>
           </div>
 
           {/* Professional Plan */}
@@ -67,7 +69,9 @@ export default function Pricing() {
                 </li>
               ))}
             </ul>
-            <Button className="w-full h-12 shadow-lg shadow-primary/20">Get Started</Button>
+            <a href="https://app.orbitl-dash.us/subscription" target="_blank" rel="noopener noreferrer">
+              <Button className="w-full h-12 shadow-lg shadow-primary/20">Get Started</Button>
+            </a>
           </div>
         </div>
 

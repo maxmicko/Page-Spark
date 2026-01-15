@@ -2,6 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import BookingWizard from "@/components/BookingWizard";
 
+// Check if the page is loaded in an iframe
+const isInIframe = () => {
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+};
+
 const DEFAULT_SERVICES = [
   { id: "basic", name: "Basic Wash", price: 30, duration: 30, description: "Exterior wash & dry, tire shine" },
   { id: "full", name: "Full Detail", price: 120, duration: 120, description: "Deep clean inside & out, clay bar, sealant" },
@@ -111,11 +120,22 @@ export default function EmbedForm() {
   const primaryColor = urlParams.get('color') || '#0ea5e9';
   const borderRadius = parseInt(urlParams.get('radius') || '8');
   const fontFamily = urlParams.get('font') || 'Inter';
-  const businessName = user?.full_name || user?.name || user?.business_name || user?.company_name || 'Your Business';
+  // Use business name from URL parameter first, then fall back to user data, then default
+  const businessNameFromUrl = urlParams.get('businessName');
+  const businessName = businessNameFromUrl || user?.full_name || user?.name || user?.business_name || user?.company_name || 'Your Business';
+  
+  const inIframe = isInIframe();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
-      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto">
+    <div 
+      className={`bg-gray-50 ${inIframe ? 'p-0 h-screen' : 'min-h-screen px-4 py-2 sm:px-6 sm:py-4'} flex items-center justify-center`}
+    >
+      <div 
+        className={`w-full ${inIframe ? 'h-full max-w-full px-3 sm:px-4' : 'max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl'}`}
+        style={{ 
+          height: inIframe ? '100%' : 'auto'
+        }}
+      >
         <BookingWizard
           styles={{
             primaryColor,

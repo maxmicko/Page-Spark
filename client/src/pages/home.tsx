@@ -129,7 +129,7 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden min-h-[80vh] flex items-center">
+    <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden h-screen flex items-center">
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
         <video
@@ -167,7 +167,7 @@ const Hero = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-2">
               <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:scale-105 transition-transform" data-testid="button-try-free">
-                Start 3-Day Free Trial
+                Start for Free
               </Button>
               <Button
                 variant="outline"
@@ -380,7 +380,9 @@ const Pricing = () => {
                 </li>
               ))}
             </ul>
-            <Button variant="outline" className="w-full h-12">Get Started</Button>
+            <a href="https://app.orbitl-dash.us/subscription" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" className="w-full h-12">Get Started</Button>
+            </a>
           </div>
 
           {/* Professional Plan */}
@@ -411,7 +413,9 @@ const Pricing = () => {
                 </li>
               ))}
             </ul>
-            <Button className="w-full h-12 shadow-lg shadow-primary/20">Get Started</Button>
+            <a href="https://app.orbitl-dash.us/subscription" target="_blank" rel="noopener noreferrer">
+              <Button className="w-full h-12 shadow-lg shadow-primary/20">Get Started</Button>
+            </a>
           </div>
         </div>
 
@@ -461,7 +465,7 @@ const FAQ = () => {
     },
     {
       question: "Is there a setup fee?",
-      answer: "No setup fees. You get full access to all features during your 3-day free trial, and setup takes just a few minutes."
+      answer: "No setup fees. You get full access to all features when you start for free, and setup takes just a few minutes."
     },
     {
       question: "What devices does it work on?",
