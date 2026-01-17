@@ -33,6 +33,39 @@ export default function EmbedForm() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Update meta tags for better link previews
+    const updateMetaTags = (title: string, description: string) => {
+      // Update or create og:title
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if (!ogTitle) {
+        ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        document.head.appendChild(ogTitle);
+      }
+      ogTitle.setAttribute('content', title);
+
+      // Update or create og:description
+      let ogDescription = document.querySelector('meta[property="og:description"]');
+      if (!ogDescription) {
+        ogDescription = document.createElement('meta');
+        ogDescription.setAttribute('property', 'og:description');
+        document.head.appendChild(ogDescription);
+      }
+      ogDescription.setAttribute('content', description);
+
+      // Update or create og:image
+      let ogImage = document.querySelector('meta[property="og:image"]');
+      if (!ogImage) {
+        ogImage = document.createElement('meta');
+        ogImage.setAttribute('property', 'og:image');
+        document.head.appendChild(ogImage);
+      }
+      ogImage.setAttribute('content', `${window.location.origin}/opengraph.jpg`);
+
+      // Update page title
+      document.title = title;
+    };
+
     const loadData = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const bookingId = urlParams.get('bookingId');
@@ -63,6 +96,13 @@ export default function EmbedForm() {
       }
       const userData = userDataArray[0];
       setUser(userData);
+
+      // Update meta tags with business name
+      const businessName = userData?.full_name || userData?.name || userData?.business_name || userData?.company_name || 'OrbitL Dash';
+      updateMetaTags(
+        `${businessName} - Book Your Service`,
+        `Book your appointment with ${businessName}. Schedule your service online quickly and easily.`
+      );
 
       // Get services for the user
       const servicesResponse = await fetch(`https://gfpidktpzubpcsqlvxcq.supabase.co/rest/v1/user_services?select=*&user_id=eq.${userData.id}`, {
