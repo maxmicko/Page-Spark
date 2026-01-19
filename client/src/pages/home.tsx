@@ -179,9 +179,19 @@ const Hero = () => {
               Built specifically for mobile detailers—not landscapers, not plumbers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-2">
-              <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:scale-105 transition-transform" data-testid="button-try-free">
-                Start for Free
-              </Button>
+              <a 
+                href="https://app.orbitl-dash.us/subscription" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button 
+                  size="lg" 
+                  className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:scale-105 transition-transform" 
+                  data-testid="button-try-free"
+                >
+                  Start for Free
+                </Button>
+              </a>
               <Button
                 variant="outline"
                 size="lg"
@@ -587,7 +597,11 @@ const CTA = () => {
           Setup takes under 15 minutes.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="h-14 px-8 text-lg bg-primary hover:bg-primary/90 text-foreground border-0">
+          <Button 
+            size="lg" 
+            className="h-14 px-8 text-lg bg-primary hover:bg-primary/90 text-foreground border-0"
+            onClick={() => window.location.href = 'https://app.orbitl-dash.us/subscription'}
+          >
             Start for Free
           </Button>
           <Button variant="outline" size="lg" className="h-14 px-8 text-lg bg-transparent text-background border-white/20 hover:bg-white/10 hover:text-background">
