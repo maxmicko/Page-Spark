@@ -50,12 +50,18 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b shadow-sm" : "bg-transparent"}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+      scrolled 
+        ? "bg-background/80 backdrop-blur-md border-b shadow-sm" 
+        : "bg-gradient-to-b from-black/60 via-black/40 to-transparent backdrop-blur-md md:from-black/50 md:via-black/30 md:to-transparent"
+    }`}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Logo" className="size-8" />
-            <span className={`text-xl font-bold font-heading ${scrolled ? "text-foreground" : "text-white"}`}>OrbitL Dash</span>
+            <div className={`p-1.5 rounded-lg ${scrolled ? "" : "bg-black/30 backdrop-blur-sm border border-white/20 md:bg-transparent md:border-transparent"}`}>
+              <img src="/favicon.png" alt="Logo" className="size-8" />
+            </div>
+            <span className={`text-xl font-bold font-heading ${scrolled ? "text-foreground" : "text-white drop-shadow-lg"}`}>OrbitL Dash</span>
           </div>
 
           {/* Desktop Nav */}
@@ -65,17 +71,17 @@ const Navbar = () => {
                 <a
                   key={link.name}
                   href={link.href}
-                  className={`text-sm font-medium ${scrolled ? "text-foreground" : "text-white"} hover:text-primary transition-colors`}
+                  className={`text-sm font-medium ${scrolled ? "text-foreground" : "text-white drop-shadow-md"} hover:text-primary transition-colors`}
                 >
                   {link.name}
                 </a>
               ))}
             </div>
             <div className="flex items-center gap-3 border-l pl-6">
-              <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "" : "text-white"}`} data-testid="button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
+              <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "text-foreground" : "text-white drop-shadow-md"}`} data-testid="button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                 Log in
               </Button>
-              <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "" : "text-white"}`} data-testid="button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
+              <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "bg-primary text-primary-foreground" : "text-white drop-shadow-md"}`} data-testid="button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
                 Sign up
               </Button>
             </div>
@@ -83,7 +89,11 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className={`md:hidden p-2 ${scrolled ? "text-foreground" : "text-white"}`}
+            className={`md:hidden p-2 rounded-lg transition-colors drop-shadow-md ${
+              scrolled 
+                ? "text-foreground bg-background/60 border-border/50 border hover:bg-background/80" 
+                : "text-white bg-black/30 backdrop-blur-sm border border-white/20 hover:bg-black/40"
+            }`}
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X /> : <Menu />}
@@ -98,21 +108,21 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-b overflow-hidden"
+            className="md:hidden bg-gradient-to-b from-background/95 via-background/98 to-background backdrop-blur-md border-b overflow-hidden"
           >
             <div className="px-4 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className={`text-lg font-medium ${scrolled ? "text-foreground" : "text-white"} py-2`}
+                  className="text-lg font-medium text-foreground hover:text-primary py-2 transition-colors"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
                 </a>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t mt-2">
-                <Button variant="outline" className="w-full" data-testid="mobile-button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
+                <Button variant="outline" className="w-full text-foreground border-border" data-testid="mobile-button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                   Log in
                 </Button>
                 <Button className="w-full" data-testid="mobile-button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
@@ -129,7 +139,7 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden h-screen flex items-center">
+    <section className="relative pt-20 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden min-h-screen flex items-center md:items-center">
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
         <video
@@ -144,8 +154,8 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 w-full mt-4 md:mt-0">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
