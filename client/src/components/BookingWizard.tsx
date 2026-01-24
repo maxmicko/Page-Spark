@@ -209,7 +209,7 @@ export default function BookingWizard({ styles, userId, services, businessName }
           <p className="text-slate-500 text-sm">Please verify the details below.</p>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-1 space-y-6">
+        <div className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-1 space-y-6">
           <div className="p-6 bg-slate-900 text-white rounded-2xl space-y-4">
             <div className="flex justify-between items-start border-b border-white/10 pb-4">
               <div className="flex items-center gap-3">
@@ -287,7 +287,7 @@ export default function BookingWizard({ styles, userId, services, businessName }
   }
 
   return (
-    <div className="flex flex-col h-[650px] w-full" style={{ fontFamily: styles?.fontFamily || 'Inter' }}>
+    <div className="flex flex-col min-h-[650px] h-full w-full" style={{ fontFamily: styles?.fontFamily || 'Inter' }}>
       {businessName && (
         <div className="shrink-0 text-center mb-4 md:mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900" style={{ fontFamily: styles?.fontFamily, color: primaryColor }}>
@@ -324,7 +324,7 @@ export default function BookingWizard({ styles, userId, services, businessName }
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-1">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-1">
         {step === 1 && (
           <div className="grid gap-2 md:gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-4">
             {SERVICES.map((service) => {

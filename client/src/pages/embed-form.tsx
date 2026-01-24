@@ -2,6 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import BookingWizard from "@/components/BookingWizard";
 
+// Check if the page is loaded in an iframe
+const isInIframe = () => {
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+};
+
 const DEFAULT_SERVICES = [
   { id: "basic", name: "Basic Wash", price: 30, duration: 30, description: "Exterior wash & dry, tire shine" },
   { id: "full", name: "Full Detail", price: 120, duration: 120, description: "Deep clean inside & out, clay bar, sealant" },
@@ -24,6 +33,39 @@ export default function EmbedForm() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Update meta tags for better link previews
+    const updateMetaTags = (title: string, description: string) => {
+      // Update or create og:title
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if (!ogTitle) {
+        ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        document.head.appendChild(ogTitle);
+      }
+      ogTitle.setAttribute('content', title);
+
+      // Update or create og:description
+      let ogDescription = document.querySelector('meta[property="og:description"]');
+      if (!ogDescription) {
+        ogDescription = document.createElement('meta');
+        ogDescription.setAttribute('property', 'og:description');
+        document.head.appendChild(ogDescription);
+      }
+      ogDescription.setAttribute('content', description);
+
+      // Update or create og:image
+      let ogImage = document.querySelector('meta[property="og:image"]');
+      if (!ogImage) {
+        ogImage = document.createElement('meta');
+        ogImage.setAttribute('property', 'og:image');
+        document.head.appendChild(ogImage);
+      }
+      ogImage.setAttribute('content', `${window.location.origin}/opengraph.jpg`);
+
+      // Update page title
+      document.title = title;
+    };
+
     const loadData = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const bookingId = urlParams.get('bookingId');
@@ -54,6 +96,13 @@ export default function EmbedForm() {
       }
       const userData = userDataArray[0];
       setUser(userData);
+
+      // Update meta tags with business name
+      const businessName = userData?.full_name || userData?.name || userData?.business_name || userData?.company_name || 'OrbitL Dash';
+      updateMetaTags(
+        `${businessName} - Book Your Service`,
+        `Book your appointment with ${businessName}. Schedule your service online quickly and easily.`
+      );
 
       // Get services for the user
       const servicesResponse = await fetch(`https://gfpidktpzubpcsqlvxcq.supabase.co/rest/v1/user_services?select=*&user_id=eq.${userData.id}`, {
@@ -111,11 +160,22 @@ export default function EmbedForm() {
   const primaryColor = urlParams.get('color') || '#0ea5e9';
   const borderRadius = parseInt(urlParams.get('radius') || '8');
   const fontFamily = urlParams.get('font') || 'Inter';
-  const businessName = user?.full_name || user?.name || user?.business_name || user?.company_name || 'Your Business';
+  // Use business name from URL parameter first, then fall back to user data, then default
+  const businessNameFromUrl = urlParams.get('businessName');
+  const businessName = businessNameFromUrl || user?.full_name || user?.name || user?.business_name || user?.company_name || 'Your Business';
+  
+  const inIframe = isInIframe();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
-      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto">
+    <div 
+      className={`bg-gray-50 ${inIframe ? 'p-0 h-screen' : 'min-h-screen px-4 py-2 sm:px-6 sm:py-4'} flex items-center justify-center`}
+    >
+      <div 
+        className={`w-full ${inIframe ? 'h-full max-w-full px-3 sm:px-4' : 'max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl'}`}
+        style={{ 
+          height: inIframe ? '100%' : 'auto'
+        }}
+      >
         <BookingWizard
           styles={{
             primaryColor,

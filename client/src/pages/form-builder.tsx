@@ -10,7 +10,8 @@ import {
   Copy,
   Check,
   ChevronRight,
-  Eye
+  Eye,
+  Link as LinkIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,19 +77,22 @@ export default function FormBuilder() {
     });
   }, []);
 
+  const embedUrl = bookingId ? `${window.location.origin}/embed?bookingId=${bookingId}&color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${encodeURIComponent(fontFamily)}&businessName=${encodeURIComponent(businessName)}` : '';
+  
   const embedCode = bookingId ? `<iframe
-    src="${window.location.origin}/embed?bookingId=${bookingId}&color=${encodeURIComponent(primaryColor)}&radius=${borderRadius[0]}&font=${encodeURIComponent(fontFamily)}"
+    src="${embedUrl}"
     width="100%"
-    height="750px"
+    height="800px"
     frameborder="0"
+    style="border: none;"
   ></iframe>` : 'Please enter your booking ID to generate embed code';
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(embedCode);
+  const copyToClipboard = (text: string, type: string) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     toast({
       title: "Copied!",
-      description: "Embed code copied to clipboard.",
+      description: `${type} copied to clipboard.`,
     });
     setTimeout(() => setCopied(false), 2000);
   };
@@ -167,12 +171,16 @@ export default function FormBuilder() {
                     <SelectValue placeholder="Select font" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Inter">Inter (Clean Sans)</SelectItem>
-                    <SelectItem value="Outfit">Outfit (Modern Geometric)</SelectItem>
-                    <SelectItem value="Montserrat">Montserrat (Professional)</SelectItem>
-                    <SelectItem value="Poppins">Poppins (Friendly)</SelectItem>
+                    <SelectItem value="Inter" style={{ fontFamily: 'Inter' }}>Inter - Clean Modern Sans</SelectItem>
+                    <SelectItem value="Playfair Display" style={{ fontFamily: 'Playfair Display' }}>Playfair Display - Elegant Serif</SelectItem>
+                    <SelectItem value="Space Grotesk" style={{ fontFamily: 'Space Grotesk' }}>Space Grotesk - Tech Geometric</SelectItem>
+                    <SelectItem value="Bebas Neue" style={{ fontFamily: 'Bebas Neue' }}>Bebas Neue - Bold Display</SelectItem>
+                    <SelectItem value="JetBrains Mono" style={{ fontFamily: 'JetBrains Mono' }}>JetBrains Mono - Technical Monospace</SelectItem>
                   </SelectContent>
                 </Select>
+                <p className="text-xs text-slate-500">
+                  Choose a font style that matches your brand personality
+                </p>
               </div>
 
               <div className="space-y-4">
@@ -207,7 +215,7 @@ export default function FormBuilder() {
                     <Eye className="w-4 h-4" /> Preview
                   </TabsTrigger>
                   <TabsTrigger value="code" className="gap-2">
-                    <Code2 className="w-4 h-4" /> Embed Code
+                    <Code2 className="w-4 h-4" /> Embed Options
                   </TabsTrigger>
                 </TabsList>
                 <div className="text-xs text-slate-400 font-mono hidden md:block">
@@ -233,14 +241,72 @@ export default function FormBuilder() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="code" className="mt-0">
-                <Card className="p-6 bg-slate-900 text-slate-300 border-none shadow-xl min-h-[400px]">
+              <TabsContent value="code" className="mt-0 space-y-6">
+                {/* Direct Link */}
+                <Card className="p-6 bg-slate-900 text-slate-300 border-none shadow-xl">
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-xs font-mono text-slate-500 uppercase tracking-wider">HTML Embed Code</span>
+                    <div className="flex items-center gap-2">
+                      <LinkIcon className="w-4 h-4 text-slate-400" />
+                      <span className="text-xs font-mono text-slate-500 uppercase tracking-wider">Direct Link</span>
+                    </div>
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      onClick={copyToClipboard}
+                      onClick={() => copyToClipboard(embedUrl, "Link")}
+                      className="text-slate-400 hover:text-white hover:bg-slate-800"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                      <span className="ml-2">{copied ? "Copied" : "Copy"}</span>
+                    </Button>
+                  </div>
+                  <div className="p-4 bg-slate-800/50 rounded-lg overflow-x-auto">
+                    <a 
+                      href={embedUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 text-sm break-all font-mono"
+                    >
+                      {embedUrl || 'Please enter your booking ID to generate link'}
+                    </a>
+                  </div>
+                  <div className="mt-4 p-4 border border-slate-800 rounded-lg space-y-3">
+                    <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-primary" /> How to Use Direct Link
+                    </h4>
+                    <div className="space-y-2 text-xs text-slate-400">
+                      <p className="text-slate-300 font-medium mb-2">Best for:</p>
+                      <ul className="list-disc list-inside space-y-1 ml-2">
+                        <li>Adding as a button or link on your website</li>
+                        <li>Sharing via email, SMS, or social media</li>
+                        <li>Quick access without embedding code</li>
+                        <li>Mobile-friendly standalone pages</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2 text-xs text-slate-400 pt-2 border-t border-slate-800">
+                      <p className="text-slate-300 font-medium mb-2">Steps:</p>
+                      <ol className="list-decimal list-inside space-y-1 ml-2">
+                        <li>Copy the link above</li>
+                        <li>Add it as a button or text link on your website</li>
+                        <li>Or share it directly with customers</li>
+                        <li>When clicked, the form opens in a new page</li>
+                      </ol>
+                    </div>
+                    <div className="pt-2 border-t border-slate-800">
+                      <p className="text-xs text-slate-500 italic">
+                        Example: Add a "Book Now" button that links to this URL
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Iframe Code */}
+                <Card className="p-6 bg-slate-900 text-slate-300 border-none shadow-xl">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-xs font-mono text-slate-500 uppercase tracking-wider">HTML Iframe Code</span>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => copyToClipboard(embedCode, "Iframe code")}
                       className="text-slate-400 hover:text-white hover:bg-slate-800"
                     >
                       {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -250,13 +316,34 @@ export default function FormBuilder() {
                   <pre className="p-4 bg-slate-800/50 rounded-lg overflow-x-auto font-mono text-sm leading-relaxed text-blue-300">
                     {embedCode}
                   </pre>
-                  <div className="mt-8 p-4 border border-slate-800 rounded-lg">
-                    <h4 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
-                      <ChevronRight className="w-4 h-4 text-primary" /> How to use
+                  <div className="mt-4 p-4 border border-slate-800 rounded-lg space-y-3">
+                    <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-primary" /> How to Use Iframe Code
                     </h4>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Copy the code above and paste it into the HTML of your website. The form will automatically adapt to your chosen styles and will send booking requests directly to your OrbitL Dash.
-                    </p>
+                    <div className="space-y-2 text-xs text-slate-400">
+                      <p className="text-slate-300 font-medium mb-2">Best for:</p>
+                      <ul className="list-disc list-inside space-y-1 ml-2">
+                        <li>Embedding the form directly on your website</li>
+                        <li>Keeping customers on your site (no page redirect)</li>
+                        <li>Full control over form placement and styling</li>
+                        <li>Professional, seamless integration</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2 text-xs text-slate-400 pt-2 border-t border-slate-800">
+                      <p className="text-slate-300 font-medium mb-2">Steps:</p>
+                      <ol className="list-decimal list-inside space-y-1 ml-2">
+                        <li>Copy the HTML code above</li>
+                        <li>Open your website's HTML editor or page builder</li>
+                        <li>Paste the code where you want the form to appear</li>
+                        <li>Save and publish your page</li>
+                        <li>The form will display embedded on your site</li>
+                      </ol>
+                    </div>
+                    <div className="pt-2 border-t border-slate-800">
+                      <p className="text-xs text-slate-500 italic">
+                        Tip: You can adjust the width and height in the iframe code to fit your design
+                      </p>
+                    </div>
                   </div>
                 </Card>
               </TabsContent>

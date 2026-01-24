@@ -50,12 +50,18 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b shadow-sm" : "bg-transparent"}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
+      scrolled 
+        ? "bg-background/80 backdrop-blur-md border-b shadow-sm" 
+        : "bg-gradient-to-b from-black/60 via-black/40 to-transparent backdrop-blur-md md:from-black/50 md:via-black/30 md:to-transparent"
+    }`}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Logo" className="size-8" />
-            <span className={`text-xl font-bold font-heading ${scrolled ? "text-foreground" : "text-white"}`}>OrbitL Dash</span>
+            <div className={`p-1.5 rounded-lg ${scrolled ? "" : "bg-black/30 backdrop-blur-sm border border-white/20 md:bg-transparent md:border-transparent"}`}>
+              <img src="/favicon.png" alt="Logo" className="size-8" />
+            </div>
+            <span className={`text-xl font-bold font-heading ${scrolled ? "text-foreground" : "text-white drop-shadow-lg"}`}>OrbitL Dash</span>
           </div>
 
           {/* Desktop Nav */}
@@ -65,27 +71,37 @@ const Navbar = () => {
                 <a
                   key={link.name}
                   href={link.href}
-                  className={`text-sm font-medium ${scrolled ? "text-foreground" : "text-white"} hover:text-primary transition-colors`}
+                  className={`text-sm font-medium ${scrolled ? "text-foreground" : "text-white drop-shadow-md"} hover:text-primary transition-colors`}
                 >
                   {link.name}
                 </a>
               ))}
             </div>
             <div className="flex items-center gap-3 border-l pl-6">
-              <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "" : "text-white"}`} data-testid="button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
+              <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "text-foreground" : "text-white drop-shadow-md"}`} data-testid="button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                 Log in
               </Button>
+<<<<<<< HEAD
               <Link href="/signup">
                 <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "" : "text-white"}`} data-testid="button-signup">
                   Sign up
                 </Button>
               </Link>
+=======
+              <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "bg-primary text-primary-foreground" : "text-white drop-shadow-md"}`} data-testid="button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
+                Sign up
+              </Button>
+>>>>>>> 224a16d76642138a2aea4c457547d303fed2c21f
             </div>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className={`md:hidden p-2 ${scrolled ? "text-foreground" : "text-white"}`}
+            className={`md:hidden p-2 rounded-lg transition-colors drop-shadow-md ${
+              scrolled 
+                ? "text-foreground bg-background/60 border-border/50 border hover:bg-background/80" 
+                : "text-white bg-black/30 backdrop-blur-sm border border-white/20 hover:bg-black/40"
+            }`}
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X /> : <Menu />}
@@ -100,21 +116,21 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-b overflow-hidden"
+            className="md:hidden bg-gradient-to-b from-background/95 via-background/98 to-background backdrop-blur-md border-b overflow-hidden"
           >
             <div className="px-4 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className={`text-lg font-medium ${scrolled ? "text-foreground" : "text-white"} py-2`}
+                  className="text-lg font-medium text-foreground hover:text-primary py-2 transition-colors"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
                 </a>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t mt-2">
-                <Button variant="outline" className="w-full" data-testid="mobile-button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
+                <Button variant="outline" className="w-full text-foreground border-border" data-testid="mobile-button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                   Log in
                 </Button>
                 <Link href="/signup">
@@ -133,7 +149,7 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden min-h-[80vh] flex items-center">
+    <section className="relative pt-20 pb-16 md:pt-48 md:pb-24 px-4 overflow-hidden min-h-screen flex items-center md:items-center">
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
         <video
@@ -148,31 +164,44 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 w-full mt-4 md:mt-0">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="flex flex-col items-start gap-6"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium backdrop-blur-md border border-primary/20">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-sm font-medium backdrop-blur-md border border-red-400/30">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
               </span>
-              Now available for iOS and Android
+              Stop losing 3-5 paid hours every week.
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-heading leading-tight text-white">
-              Mobile detailing, <span className="text-primary">simplified.</span>
+              No more admin <span className="text-primary">after a 10-hour day.</span>
             </h1>
             <p className="text-lg md:text-xl text-white/90 max-w-lg">
-              OrbitL Dash is the ultimate management platform for mobile car wash professionals. Schedule, route, and grow with ease.
+              Bad routing, no-shows, and chaos silently drain your income. OrbitL batches jobs by location and service time so your day stays dense—and your driving short.
+            </p>
+            <p className="text-base text-white/80 max-w-lg mt-2">
+              Built specifically for mobile detailers—not landscapers, not plumbers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-2">
-              <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:scale-105 transition-transform" data-testid="button-try-free">
-                Start 3-Day Free Trial
-              </Button>
+              <a 
+                href="https://app.orbitl-dash.us/subscription" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button 
+                  size="lg" 
+                  className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:scale-105 transition-transform" 
+                  data-testid="button-try-free"
+                >
+                  Start for Free
+                </Button>
+              </a>
               <Button
                 variant="outline"
                 size="lg"
@@ -236,22 +265,73 @@ const Hero = () => {
   );
 };
 
+const WhoThisIsFor = () => {
+  return (
+    <section className="py-16 bg-white border-y">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="p-6 rounded-xl bg-green-50 border border-green-200">
+            <h3 className="text-xl font-bold font-heading mb-4 text-green-900 flex items-center gap-2">
+              <Check className="w-5 h-5 text-green-600" />
+              This is for you if:
+            </h3>
+            <ul className="space-y-2 text-foreground">
+              <li className="flex items-start gap-2">
+                <span className="text-green-600 mt-1">•</span>
+                <span>You're a solo or small-team mobile detailer</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-600 mt-1">•</span>
+                <span>You do multiple jobs per day</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-600 mt-1">•</span>
+                <span>Driving time eats into your earnings</span>
+              </li>
+            </ul>
+          </div>
+          <div className="p-6 rounded-xl bg-red-50 border border-red-200">
+            <h3 className="text-xl font-bold font-heading mb-4 text-red-900 flex items-center gap-2">
+              <X className="w-5 h-5 text-red-600" />
+              This is not for you if:
+            </h3>
+            <ul className="space-y-2 text-foreground">
+              <li className="flex items-start gap-2">
+                <span className="text-red-600 mt-1">•</span>
+                <span>You only do 1 job per day</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-red-600 mt-1">•</span>
+                <span>You don't care about efficiency</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-red-600 mt-1">•</span>
+                <span>You're not mobile</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Features = () => {
   const features = [
     {
       icon: <Users className="w-6 h-6 text-primary" />,
       title: "Customer & Vehicle Management",
-      description: "Keep detailed records of client preferences, vehicle history, and service notes."
+      description: "Track everything automatically. No more scrambling to remember preferences after a long day."
     },
     {
       icon: <Calendar className="w-6 h-6 text-primary" />,
       title: "Smart Appointment Scheduling",
-      description: "Drag-and-drop calendar that prevents double bookings and manages recurring jobs."
+      description: "Prevent no-shows with automated reminders. Fill gaps before they cost you money."
     },
     {
       icon: <MapPin className="w-6 h-6 text-primary" />,
       title: "Route Optimization",
-      description: "Automatically calculate the most efficient route between jobs to save gas and time."
+      description: "We compress your route so wasted minutes turn into paid work. Most detailers lose 30-60 minutes per day—we give that back."
     },
     {
       icon: <Settings className="w-6 h-6 text-primary" />,
@@ -266,7 +346,7 @@ const Features = () => {
     {
       icon: <BarChart3 className="w-6 h-6 text-primary" />,
       title: "Job Tracking & Analytics",
-      description: "See your daily revenue, job completion rates, and business growth at a glance."
+      description: "See exactly where your money comes from—and where you're losing it. Make decisions that protect your income."
     }
   ];
 
@@ -275,10 +355,10 @@ const Features = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4 text-foreground">
-            Everything you need to run your mobile business
+            Built to keep your day full—and your driving short.
           </h2>
           <p className="text-lg text-foreground">
-            Stop juggling spreadsheets and text messages. OrbitL Dash gives you a professional command center.
+            OrbitL batches jobs by location and service time so wasted minutes turn into paid work.
           </p>
         </div>
 
@@ -314,7 +394,7 @@ const HowItWorks = () => {
     {
       number: "02",
       title: "Schedule & Route",
-      description: "Book appointments and let our AI optimize your daily driving route."
+      description: "Book appointments and let OrbitL optimize your daily driving route automatically."
     },
     {
       number: "03",
@@ -328,7 +408,7 @@ const HowItWorks = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">How it works</h2>
-          <p className="text-lg text-foreground">Get started in three simple steps</p>
+          <p className="text-lg text-foreground">Stop losing hours. Start protecting income.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 relative">
@@ -355,8 +435,8 @@ const Pricing = () => {
     <section id="pricing" className="py-20 bg-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">Simple, transparent pricing</h2>
-          <p className="text-lg text-foreground">Choose the plan that fits your business stage.</p>
+          <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">One saved job pays for the month</h2>
+          <p className="text-lg text-foreground">Stop losing money to chaos. Start protecting your income.</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -384,7 +464,9 @@ const Pricing = () => {
                 </li>
               ))}
             </ul>
-            <Button variant="outline" className="w-full h-12">Get Started</Button>
+            <a href="https://app.orbitl-dash.us/subscription" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" className="w-full h-12">Get Started</Button>
+            </a>
           </div>
 
           {/* Professional Plan */}
@@ -394,11 +476,13 @@ const Pricing = () => {
             </div>
             <div className="mb-8">
               <h3 className="text-xl font-bold mb-2">Professional</h3>
-              <p className="text-foreground text-sm">Everything you need to grow your business.</p>
+              <p className="text-foreground text-sm">Eliminate wasted driving and fill every gap. One saved job covers this.</p>
               <div className="flex items-baseline gap-1 mt-4">
                 <span className="text-4xl font-bold text-foreground">$89.99</span>
                 <span className="text-foreground">/month</span>
               </div>
+              <p className="text-sm text-primary font-semibold mt-2">≈ One saved job per month</p>
+              <p className="text-xs text-foreground/70 mt-3 italic">If this doesn't save you at least one job per month, cancel.</p>
             </div>
             <ul className="space-y-4 mb-8 flex-1">
               {[
@@ -415,7 +499,12 @@ const Pricing = () => {
                 </li>
               ))}
             </ul>
-            <Button className="w-full h-12 shadow-lg shadow-primary/20">Get Started</Button>
+            <a href="https://app.orbitl-dash.us/subscription" target="_blank" rel="noopener noreferrer">
+              <Button className="w-full h-12 shadow-lg shadow-primary/20">Get Started</Button>
+            </a>
+            <p className="text-xs text-foreground/70 mt-4 text-center italic">
+              We'll help you set this up if you want.
+            </p>
           </div>
         </div>
 
@@ -465,7 +554,7 @@ const FAQ = () => {
     },
     {
       question: "Is there a setup fee?",
-      answer: "No setup fees. You get full access to all features during your 3-day free trial, and setup takes just a few minutes."
+      answer: "No setup fees. You get full access to all features when you start for free, and setup takes just a few minutes."
     },
     {
       question: "What devices does it work on?",
@@ -509,14 +598,21 @@ const CTA = () => {
       
       <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
         <h2 className="text-3xl md:text-5xl font-bold font-heading mb-6 text-background">
-          Ready to get organized?
+          Stop losing money to chaos
         </h2>
-        <p className="text-xl text-white max-w-2xl mx-auto mb-10">
-          Join hundreds of mobile car wash businesses saving time and growing faster with OrbitL Dash.
+        <p className="text-xl text-white max-w-2xl mx-auto mb-6">
+          One saved job pays for the month. Start protecting your income today—no credit card required.
+        </p>
+        <p className="text-base text-white/80 max-w-xl mx-auto mb-10">
+          Setup takes under 15 minutes.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="h-14 px-8 text-lg bg-primary hover:bg-primary/90 text-foreground border-0">
-            Get Started for Free
+          <Button 
+            size="lg" 
+            className="h-14 px-8 text-lg bg-primary hover:bg-primary/90 text-foreground border-0"
+            onClick={() => window.location.href = 'https://app.orbitl-dash.us/subscription'}
+          >
+            Start for Free
           </Button>
           <Button variant="outline" size="lg" className="h-14 px-8 text-lg bg-transparent text-background border-white/20 hover:bg-white/10 hover:text-background">
             Have Questions? Contact Us
@@ -583,6 +679,7 @@ export default function Home() {
     <div className="min-h-screen font-sans bg-background text-foreground overflow-x-hidden selection:bg-primary/20">
       <Navbar />
       <Hero />
+      <WhoThisIsFor />
       <Features />
       <HowItWorks />
       <Pricing />
