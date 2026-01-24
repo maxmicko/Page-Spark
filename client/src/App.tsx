@@ -17,6 +17,8 @@ import Pricing from "@/pages/pricing";
 import RefundPolicy from "@/pages/refund-policy";
 import Signup from "@/pages/signup";
 import Subscription from "@/pages/subscription";
+import FreeBookingForm from "@/pages/free-booking-form";
+import BestFreeBookingForms from "@/pages/best-free-booking-forms";
 
 function Router() {
   return (
@@ -33,6 +35,8 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/subscription" component={Subscription} />
+      <Route path="/free-booking-form" component={FreeBookingForm} />
+      <Route path="/best-free-booking-forms" component={BestFreeBookingForms} />
       <Route component={NotFound} />
     </Switch>
   );
