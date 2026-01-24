@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { createCheckoutSession } from "@/lib/polar";
+import { trackEvent } from "@/lib/analytics";
 
 const plans = [
   {
@@ -58,12 +59,14 @@ export default function Pricing() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    trackEvent('pricing_view', 'page_view');
   }, []);
 
   const handleCheckout = async (planId: string) => {
     if (!user) return;
 
     setLoading(planId);
+    trackEvent('checkout_start', 'conversion', planId);
 
     try {
       await createCheckoutSession({ id: planId }, { email: user.email });
@@ -121,61 +124,7 @@ export default function Pricing() {
                 {loading === plan.id ? 'Loading...' : 'Get Started'}
               </Button>
             </div>
-<<<<<<< HEAD
           ))}
-=======
-            <ul className="space-y-4 mb-8 flex-1">
-              {[
-                "Simple booking flow",
-                "Customer requests",
-                "Basic scheduling",
-                "Website booking form",
-                "Email support"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-primary shrink-0" />
-                  <span className="text-sm font-medium">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <a href="https://app.orbitl-dash.us/subscription" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="w-full h-12">Get Started</Button>
-            </a>
-          </div>
-
-          {/* Professional Plan */}
-          <div className="bg-primary/5 rounded-3xl p-8 border-2 border-primary flex flex-col shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-primary text-foreground text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
-              Most Popular
-            </div>
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-2">Professional</h3>
-              <p className="text-foreground text-sm">Everything you need to grow your business.</p>
-              <div className="flex items-baseline gap-1 mt-4">
-                <span className="text-4xl font-bold text-foreground">$89.99</span>
-                <span className="text-foreground">/month</span>
-              </div>
-            </div>
-            <ul className="space-y-4 mb-8 flex-1">
-              {[
-                "Route optimization (Smart Routes)",
-                "Full dashboard analytics",
-                "Advanced customer profiles",
-                "Previous job & vehicle data",
-                "Smart time-saving schedule",
-                "Priority 24/7 support"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-primary shrink-0" />
-                  <span className="text-sm font-medium">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <a href="https://app.orbitl-dash.us/subscription" target="_blank" rel="noopener noreferrer">
-              <Button className="w-full h-12 shadow-lg shadow-primary/20">Get Started</Button>
-            </a>
-          </div>
->>>>>>> 224a16d76642138a2aea4c457547d303fed2c21f
         </div>
 
         {/* Add-on Services */}
