@@ -81,17 +81,11 @@ const Navbar = () => {
               <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "text-foreground" : "text-white drop-shadow-md"}`} data-testid="button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
                 Log in
               </Button>
-<<<<<<< HEAD
               <Link href="/signup">
                 <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "" : "text-white"}`} data-testid="button-signup">
                   Sign up
                 </Button>
               </Link>
-=======
-              <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "bg-primary text-primary-foreground" : "text-white drop-shadow-md"}`} data-testid="button-signup" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signup'}>
-                Sign up
-              </Button>
->>>>>>> 224a16d76642138a2aea4c457547d303fed2c21f
             </div>
           </div>
 
