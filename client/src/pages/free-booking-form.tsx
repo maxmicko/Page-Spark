@@ -1,21 +1,14 @@
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, X, Clock, MessageSquare } from "lucide-react";
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import BookingWizard from "@/components/BookingWizard";
+import { LeadSignupForm } from "@/components/LeadSignupForm";
 
 export default function FreeBookingForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [, setLocation] = useLocation();
 
-  const handleGetStarted = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLocation("/success");
-  };
 
   return (
     <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/10 relative">
@@ -260,62 +253,12 @@ export default function FreeBookingForm() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-heading">Set up your free booking form</DialogTitle>
+            <DialogTitle className="text-2xl font-heading">Get Started with MobileCarwash</DialogTitle>
             <DialogDescription className="text-base mt-2 text-foreground/80">
-              This lets me customize the form for your detailing business and send setup tips. No spam.
+              Fill out the form below and we'll create your account instantly. No password required - we'll send you a secure setup link via email.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-5 mt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" placeholder="John" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="businessName">Business Name</Label>
-                <Input id="businessName" placeholder="Elite Details" required />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone">Where should booking alerts go? (Phone)</Label>
-              <Input id="phone" type="tel" placeholder="(555) 000-0000" required />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Setup + updates (Email)</Label>
-              <Input id="email" type="email" placeholder="you@example.com" required />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="city">City / Service Area (Optional)</Label>
-              <Input id="city" placeholder="Los Angeles, CA" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="issue">What's your biggest issue right now?</Label>
-              <Select required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select an option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="no-shows">No-shows / ghosting</SelectItem>
-                  <SelectItem value="texting">Too much back-and-forth texting</SelectItem>
-                  <SelectItem value="drive-time">Scheduling around drive time</SelectItem>
-                  <SelectItem value="professional">Just want to look more professional</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="pt-2">
-              <Button onClick={handleGetStarted} className="w-full h-12 text-lg font-bold hover:scale-105 transition-transform">
-                Create My Booking Form →
-              </Button>
-              <p className="mt-4 text-center text-xs text-muted-foreground italic">
-                I only contact detailers who actually use the form.
-              </p>
-            </div>
-          </div>
+          <LeadSignupForm />
         </DialogContent>
       </Dialog>
 

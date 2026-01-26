@@ -45,8 +45,8 @@ const wizardSchema = z.object({
 
 type WizardFormData = z.infer<typeof wizardSchema>;
 
-export default function BookingWizard({ styles, userId, services, businessName }: { styles?: { primaryColor?: string, borderRadius?: number, fontFamily?: string }, userId?: string, services?: any[], businessName?: string }) {
-   const SERVICES = userId ? (services || []) : DEFAULT_SERVICES;
+export default function BookingWizard({ styles, userId, services, businessName, data }: { styles?: { primaryColor?: string, borderRadius?: number, fontFamily?: string }, userId?: string, services?: any[], businessName?: string, data?: any }) {
+   const SERVICES = data?.services || (userId ? (services || []) : DEFAULT_SERVICES);
    const [step, setStep] = useState(1);
    const [isSubmitted, setIsSubmitted] = useState(false);
    const [showConfirmation, setShowConfirmation] = useState(false);
