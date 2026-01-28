@@ -407,7 +407,7 @@ export default function BestFreeBookingForms() {
           </p>
 
             </section>
-  
+
             <section className="mb-12">
               <h2 className="text-3xl font-heading font-bold mb-6">Final Verdict: Best Free Booking Form for Mobile Detailing</h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
@@ -426,10 +426,8 @@ export default function BestFreeBookingForms() {
             Generic tools work.
             Purpose-built tools convert.
           </p>
-
-          <section className="mb-12">
             </section>
-  
+
             <section className="mb-12">
               <h2 className="text-3xl font-heading font-bold mb-6">FAQ: Mobile Detailing Booking Forms</h2>
               <div className="space-y-6">
