@@ -19,6 +19,7 @@ import Signup from "@/pages/signup";
 import Subscription from "@/pages/subscription";
 import FreeBookingForm from "@/pages/free-booking-form";
 import BestFreeBookingForms from "@/pages/best-free-booking-forms";
+import { useActivityTracking } from '@/hooks/use-activity-tracking';
 
 function Router() {
   return (

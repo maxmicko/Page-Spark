@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useActivityTracking } from "@/hooks/use-activity-tracking";
+import { Helmet } from "react-helmet-async";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,11 +55,16 @@ const Navbar = () => {
               ))}
             </div>
             <div className="flex items-center gap-3 border-l pl-6">
-              <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "text-foreground" : "text-foreground"}`} data-testid="button-login" onClick={() => window.location.href = 'https://app.orbitl-dash.us/signin'}>
+              <Button variant="ghost" size="sm" className={`font-semibold ${scrolled ? "text-foreground" : "text-foreground"}`} data-testid="button-login" onClick={() => {
+                trackButtonClick('login-button', 'Log in');
+                window.location.href = 'https://app.orbitl-dash.us/signin';
+              }}>
                 Log in
               </Button>
               <Link href="/signup">
-                <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "" : ""}`} data-testid="button-signup">
+                <Button size="sm" className={`font-semibold shadow-sm ${scrolled ? "" : ""}`} data-testid="button-signup" onClick={() => {
+                  trackButtonClick('signup-button', 'Sign up');
+                }}>
                   Sign up
                 </Button>
               </Link>
@@ -117,19 +124,98 @@ const Navbar = () => {
 };
 
 export default function BestFreeBookingForms() {
-  return (
-    <div className="min-h-screen bg-background font-sans text-foreground">
-      <Navbar />
+  const { trackButtonClick } = useActivityTracking();
 
-      <main className="pt-20 pb-20">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <h1 className="text-4xl font-heading font-bold mb-8">Best Free Booking Forms for Mobile Detailers (2026 Guide)</h1>
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-            If you're a mobile detailer looking for a <strong>free booking form</strong>, you're not alone. Customers expect fast, simple online booking—and if you don't have it, they move on.
-          </p>
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-            The good news: you <strong>don't need expensive software</strong> or a developer to set up a professional mobile detailing booking form.
-          </p>
+  return (
+    <>
+      <Helmet>
+        <title>Best Free Booking Forms for Mobile Detailers (2026 Guide) | OrbitL Dash</title>
+        <meta name="description" content="Discover the best free booking forms for mobile detailers in 2026. Learn what features matter, how to create a booking form in under 2 minutes, and why niche tools convert better." />
+        <meta name="keywords" content="free booking forms, mobile detailing, booking system, mobile detailer software, free scheduling tool" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://orbitl-dash.us/best-free-booking-forms" />
+        
+        {/* OpenGraph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://orbitl-dash.us/best-free-booking-forms" />
+        <meta property="og:title" content="Best Free Booking Forms for Mobile Detailers (2026 Guide)" />
+        <meta property="og:description" content="Discover the best free booking forms for mobile detailers in 2026. Learn what features matter and how to create professional booking forms quickly." />
+        <meta property="og:image" content="https://orbitl-dash.us/opengraph.jpg" />
+        <meta property="og:site_name" content="OrbitL Dash" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://orbitl-dash.us/best-free-booking-forms" />
+        <meta name="twitter:title" content="Best Free Booking Forms for Mobile Detailers (2026 Guide)" />
+        <meta name="twitter:description" content="Discover the best free booking forms for mobile detailers in 2026. Learn what features matter and how to create professional booking forms quickly." />
+        <meta name="twitter:image" content="https://orbitl-dash.us/opengraph.jpg" />
+        <meta name="twitter:site" content="@OrbitLDash" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Best Free Booking Forms for Mobile Detailers (2026 Guide)",
+            "description": "Discover the best free booking forms for mobile detailers in 2026. Learn what features matter, how to create a booking form in under 2 minutes, and why niche tools convert better.",
+            "author": {
+              "@type": "Organization",
+              "name": "OrbitL Dash"
+            },
+            "datePublished": "2026-01-27",
+            "dateModified": "2026-01-27",
+            "image": "https://orbitl-dash.us/opengraph.jpg",
+            "publisher": {
+              "@type": "Organization",
+              "name": "OrbitL Dash",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://orbitl-dash.us/favicon.png"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "https://orbitl-dash.us/best-free-booking-forms"
+            }
+          })}
+        </script>
+        
+        {/* Breadcrumb Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://orbitl-dash.us/"
+            }, {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Resources",
+              "item": "https://orbitl-dash.us/resources"
+            }, {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Best Free Booking Forms"
+            }]
+          })}
+        </script>
+      </Helmet>
+      
+      <div className="min-h-screen bg-background font-sans text-foreground">
+        <Navbar />
+
+        <main className="pt-20 pb-20">
+          <article className="container mx-auto px-4 max-w-4xl">
+            <header className="mb-12">
+              <h1 className="text-4xl font-heading font-bold mb-8">Best Free Booking Forms for Mobile Detailers (2026 Guide)</h1>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                If you're a mobile detailer looking for a <strong>free booking form</strong>, you're not alone. Customers expect fast, simple online booking—and if you don't have it, they move on.
+                The good news: you <strong>don't need expensive software</strong> or a developer to set up a professional mobile detailing booking form.
+              </p>
+            </header>
           <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
             In this guide, we'll break down:
           </p>
@@ -140,10 +226,11 @@ export default function BestFreeBookingForms() {
             <li>Why some "free" tools cost you leads long-term</li>
           </ul>
 
-          <h2 className="text-3xl font-heading font-bold mb-6">What Is a Mobile Detailing Booking Form?</h2>
-          <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-            A mobile detailing booking form lets customers:
-          </p>
+          <section className="mb-12">
+            <h2 className="text-3xl font-heading font-bold mb-6">What Is a Mobile Detailing Booking Form?</h2>
+            <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+              A mobile detailing booking form lets customers:
+            </p>
           <ul className="list-disc list-inside text-lg text-muted-foreground mb-8 space-y-2">
             <li>Choose a service (interior, exterior, full detail)</li>
             <li>Pick a date and time</li>
@@ -154,10 +241,13 @@ export default function BestFreeBookingForms() {
             Instead of endless texts and calls, everything is captured automatically.
           </p>
 
-          <h2 className="text-3xl font-heading font-bold mb-6">What to Look for in a Free Mobile Detailing Form</h2>
-          <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-            Before choosing any tool, make sure it has:
-          </p>
+            </section>
+  
+            <section className="mb-12">
+              <h2 className="text-3xl font-heading font-bold mb-6">What to Look for in a Free Mobile Detailing Form</h2>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                Before choosing any tool, make sure it has:
+              </p>
           <ul className="list-none text-lg text-muted-foreground mb-8 space-y-2">
             <li>✅ Mobile-friendly design</li>
             <li>✅ Custom service options</li>
@@ -252,11 +342,14 @@ export default function BestFreeBookingForms() {
             <li>Overkill for most detailers</li>
           </ul>
 
-          <h2 className="text-3xl font-heading font-bold mb-6">Why Most Free Booking Forms Lose You Money</h2>
-          <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-            Here's the real issue:
-            Most tools are <strong>generic</strong>.
-          </p>
+            </section>
+  
+            <section className="mb-12">
+              <h2 className="text-3xl font-heading font-bold mb-6">Why Most Free Booking Forms Lose You Money</h2>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                Here's the real issue:
+                Most tools are <strong>generic</strong>.
+              </p>
           <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
             They're not designed for:
           </p>
@@ -273,10 +366,13 @@ export default function BestFreeBookingForms() {
             That's why niche tools convert better.
           </p>
 
-          <h2 className="text-3xl font-heading font-bold mb-6">How to Make a Mobile Detailing Booking Form for Free (Fastest Way)</h2>
-          <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-            If your goal is speed and results:
-          </p>
+            </section>
+  
+            <section className="mb-12">
+              <h2 className="text-3xl font-heading font-bold mb-6">How to Make a Mobile Detailing Booking Form for Free (Fastest Way)</h2>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                If your goal is speed and results:
+              </p>
           <ol className="list-decimal list-inside text-lg text-muted-foreground mb-8 space-y-2">
             <li>Go to <strong>OrbitL Dash Form Builder</strong></li>
             <li>Enter your business name</li>
@@ -292,10 +388,13 @@ export default function BestFreeBookingForms() {
             No learning curve.
           </p>
 
-          <h2 className="text-3xl font-heading font-bold mb-6">Where to Use Your Booking Form</h2>
-          <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-            Once live, use it everywhere:
-          </p>
+            </section>
+  
+            <section className="mb-12">
+              <h2 className="text-3xl font-heading font-bold mb-6">Where to Use Your Booking Form</h2>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                Once live, use it everywhere:
+              </p>
           <ul className="list-disc list-inside text-lg text-muted-foreground mb-8 space-y-2">
             <li>Instagram bio</li>
             <li>Facebook page</li>
@@ -307,10 +406,13 @@ export default function BestFreeBookingForms() {
             One link. Everywhere.
           </p>
 
-          <h2 className="text-3xl font-heading font-bold mb-6">Final Verdict: Best Free Booking Form for Mobile Detailing</h2>
-          <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-            If you want:
-          </p>
+            </section>
+  
+            <section className="mb-12">
+              <h2 className="text-3xl font-heading font-bold mb-6">Final Verdict: Best Free Booking Form for Mobile Detailing</h2>
+              <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+                If you want:
+              </p>
           <ul className="list-disc list-inside text-lg text-muted-foreground mb-6 space-y-2">
             <li>Zero cost</li>
             <li>Fast setup</li>
@@ -325,26 +427,31 @@ export default function BestFreeBookingForms() {
             Purpose-built tools convert.
           </p>
 
-          <h2 className="text-3xl font-heading font-bold mb-6">FAQ: Mobile Detailing Booking Forms</h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Is OrbitL Dash really free?</h3>
-              <p className="text-lg text-muted-foreground">Yes. The free booking form requires no payment.</p>
+          <section className="mb-12">
+            </section>
+  
+            <section className="mb-12">
+              <h2 className="text-3xl font-heading font-bold mb-6">FAQ: Mobile Detailing Booking Forms</h2>
+              <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Is OrbitL Dash really free?</h3>
+                <p className="text-lg text-muted-foreground">Yes. The free booking form requires no payment.</p>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Do I need a website?</h3>
+                <p className="text-lg text-muted-foreground">No. You get a shareable booking link.</p>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Can customers book from their phone?</h3>
+                <p className="text-lg text-muted-foreground">Yes. It's mobile-first by design.</p>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Is this better than Google Forms?</h3>
+                <p className="text-lg text-muted-foreground">For mobile detailing—yes, by a mile.</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Do I need a website?</h3>
-              <p className="text-lg text-muted-foreground">No. You get a shareable booking link.</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Can customers book from their phone?</h3>
-              <p className="text-lg text-muted-foreground">Yes. It's mobile-first by design.</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Is this better than Google Forms?</h3>
-              <p className="text-lg text-muted-foreground">For mobile detailing—yes, by a mile.</p>
-            </div>
-          </div>
-        </div>
+          </section>
+        </article>
       </main>
 
       <footer className="py-8 border-t border-border/40 text-center text-sm text-muted-foreground">
@@ -353,5 +460,5 @@ export default function BestFreeBookingForms() {
         </div>
       </footer>
     </div>
-  );
+  </>);
 }

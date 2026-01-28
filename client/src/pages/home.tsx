@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { 
-  Check, 
-  Menu, 
-  X, 
-  Calendar, 
-  MapPin, 
-  Users, 
-  BarChart3, 
-  Settings, 
+import {
+  Check,
+  Menu,
+  X,
+  Calendar,
+  MapPin,
+  Users,
+  BarChart3,
+  Settings,
   Clock,
   ChevronDown,
   ArrowRight,
@@ -22,6 +22,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { motion, AnimatePresence } from "framer-motion";
+import { useActivityTracking } from "@/hooks/use-activity-tracking";
 
 // Import asset
 import heroImage from "@assets/generated_images/mobile_app_mockup_for_car_wash_management.png";
@@ -32,6 +33,7 @@ const heroVideo = "/videos/6873340-hd_1920_1080_25fps.mp4";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { trackButtonClick } = useActivityTracking();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,7 +47,6 @@ const Navbar = () => {
     { name: "Features", href: "#features" },
     { name: "How it Works", href: "#how-it-works" },
     { name: "Pricing", href: "#pricing" },
-    { name: "Build Form", href: "/builder" },
     { name: "FAQ", href: "#faq" },
   ];
 
@@ -403,6 +404,11 @@ const HowItWorks = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold font-heading mb-4">How it works</h2>
           <p className="text-lg text-foreground">Stop losing hours. Start protecting income.</p>
+          <div className="mt-6">
+            <Link href="/best-free-booking-forms" className="text-primary hover:underline">
+              Read our guide: Best Free Booking Forms for Mobile Detailers →
+            </Link>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 relative">

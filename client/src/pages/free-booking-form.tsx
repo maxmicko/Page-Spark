@@ -5,9 +5,11 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import BookingWizard from "@/components/BookingWizard";
 import { LeadSignupForm } from "@/components/LeadSignupForm";
+import { useActivityTracking } from "@/hooks/use-activity-tracking";
 
 export default function FreeBookingForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { trackButtonClick } = useActivityTracking();
 
 
   return (
@@ -29,7 +31,19 @@ export default function FreeBookingForm() {
             <img src="/favicon.png" alt="Logo" className="size-7" />
             <span className="font-heading font-bold text-lg tracking-tight">OrbitL Dash</span>
           </Link>
-          <Button onClick={() => setIsModalOpen(true)} size="sm" className="hidden sm:flex text-sm h-9">
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/best-free-booking-forms" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Resources
+            </Link>
+          </div>
+          <Button 
+            onClick={() => {
+              trackButtonClick('header-cta', 'Get the Free Form (Takes 2 Minutes)');
+              setIsModalOpen(true);
+            }} 
+            size="sm" 
+            className="hidden sm:flex text-sm h-9"
+          >
             Get the Free Form (Takes 2 Minutes)
           </Button>
         </div>
@@ -59,7 +73,10 @@ export default function FreeBookingForm() {
           <Button 
             size="lg" 
             className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg w-full sm:w-auto shadow-lg hover:shadow-2xl transition-all hover:scale-105 hover:-translate-y-1" 
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              trackButtonClick('hero-cta', 'Get the Free Booking Form (2 Mins)');
+              setIsModalOpen(true);
+            }}
           >
             Get the Free Booking Form (2 Mins)
             <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
@@ -234,7 +251,10 @@ export default function FreeBookingForm() {
             <Button 
               size="lg" 
               className="h-14 md:h-16 px-8 md:px-12 text-lg md:text-xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 hover:-translate-y-2" 
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                trackButtonClick('bottom-cta', 'Get the Free Booking Form (Takes 2 Minutes)');
+                setIsModalOpen(true);
+              }}
             >
               Get the Free Booking Form (Takes 2 Minutes)
             </Button>
@@ -255,7 +275,6 @@ export default function FreeBookingForm() {
           <DialogHeader>
             <DialogTitle className="text-2xl font-heading">Get Started with MobileCarwash</DialogTitle>
             <DialogDescription className="text-base mt-2 text-foreground/80">
-              Fill out the form below and we'll create your account instantly. No password required - we'll send you a secure setup link via email.
             </DialogDescription>
           </DialogHeader>
           <LeadSignupForm />

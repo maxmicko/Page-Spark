@@ -146,3 +146,40 @@ export const subscriptionChangeSchema = z.object({
 export const insertSubscriptionChangeSchema = subscriptionChangeSchema.omit({
   id: true,
 });
+
+// Lead Signup Schema
+export const leadSignupSchema = z.object({
+  id: z.string().uuid(),
+  first_name: z.string(),
+  business_name: z.string(),
+  phone: z.string(),
+  email: z.string(),
+  city: z.string().nullable(),
+  issue: z.string(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+});
+
+export const insertLeadSignupSchema = leadSignupSchema.omit({
+  id: true,
+  created_at: true,
+  updated_at: true,
+});
+
+// User Activity Tracking Schema
+export const userActivitySchema = z.object({
+  id: z.string().uuid(),
+  session_id: z.string(),
+  user_id: z.string().uuid().nullable(),
+  event_type: z.enum(['page_open', 'click', 'scroll', 'time_spent', 'form_submit', 'button_click']),
+  event_data: z.record(z.any()).nullable(),
+  ip_address: z.string(),
+  user_agent: z.string(),
+  url: z.string(),
+  timestamp: z.string().datetime(),
+});
+
+export const insertUserActivitySchema = userActivitySchema.omit({
+  id: true,
+  timestamp: true,
+});

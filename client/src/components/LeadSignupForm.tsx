@@ -4,6 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
+import { insertLeadSignupSchema } from '@/shared/schema';
+import { useActivityTracking } from '@/hooks/use-activity-tracking';
 
 interface LeadFormData {
   first_name: string;
@@ -23,6 +26,7 @@ const issueOptions = [
 
 export function LeadSignupForm() {
   const { toast } = useToast();
+  const { trackFormSubmit } = useActivityTracking();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<LeadFormData>({
     first_name: '',
@@ -35,23 +39,87 @@ export function LeadSignupForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Client-side validation
+    if (!formData.first_name.trim() || !formData.business_name.trim() || 
+        !formData.phone.trim() || !formData.email.trim() || !formData.issue.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
+    // Track form submission attempt
+    trackFormSubmit({
+      form_type: 'lead_signup',
+      has_data: {
+        first_name: !!formData.first_name,
+        business_name: !!formData.business_name,
+        phone: !!formData.phone,
+        email: !!formData.email,
+        city: !!formData.city,
+        issue: !!formData.issue,
+      }
+    });
+
     try {
-      const response = await fetch('https://app.orbitl-dash.us/api/lead-signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
+       console.log('Submitting lead signup form with data:', formData)
+       
+       // Save to lead_signups table directly from client
+       const { data: directSaveData, error: directSaveError } = await supabase
+         .from('lead_signups')
+         .insert({
+           first_name: formData.first_name,
+           business_name: formData.business_name,
+           phone: formData.phone,
+           email: formData.email,
+           city: formData.city || null,
+           issue: formData.issue,
+         })
+         .select()
+         .single()
 
-      const result = await response.json();
+       if (directSaveError) {
+         console.error('Direct lead_signups save error:', directSaveError)
+       } else {
+         console.log('Lead signup data saved directly to DB:', directSaveData?.id)
+       }
+       
+       const response = await fetch('https://app.orbitl-dash.us/api/lead-signup', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(formData)
+       });
 
-      if (response.ok) {
+       console.log('Lead signup API response status:', response.status)
+       const status = response.status;
+
+      if (status === 201) {
+        const responseData = await response.json().catch(() => ({}))
+        console.log('Lead signup successful, response:', responseData)
+        
+        // Track successful form submission
+        trackFormSubmit({
+          form_type: 'lead_signup',
+          status: 'success',
+          email: formData.email,
+          lead_signup_id: directSaveData?.id || responseData.lead_signup_id,
+          lead_signup_saved: !!directSaveData?.id || responseData.lead_signup_saved,
+          direct_save_success: !!directSaveData?.id,
+          api_save_success: responseData.lead_signup_saved,
+        });
+        
         toast({
           title: "Account Created!",
-          description: "Check your email for password setup instructions.",
+          description: responseData.lead_signup_saved 
+            ? "Check your email for password setup instructions."
+            : "Account created, but there was an issue saving your signup data. Please contact support.",
         });
         // Reset form
         setFormData({
@@ -63,19 +131,34 @@ export function LeadSignupForm() {
           issue: ''
         });
       } else {
+        let result;
+        try {
+          result = await response.json();
+        } catch (jsonError) {
+          result = { error: "Unable to parse response" };
+        }
+
         let errorTitle = "Error";
         let errorDescription = result.error || "Something went wrong. Please try again.";
 
-        if (response.status === 409) {
+        if (status === 409) {
           errorTitle = "Account Already Exists";
           errorDescription = "An account with this email address already exists. Please try signing in instead.";
-        } else if (response.status === 400) {
+        } else if (status === 400) {
           errorTitle = "Invalid Input";
           // Use the specific error message from API
-        } else if (response.status === 500) {
+        } else if (status === 500) {
           errorTitle = "Server Error";
           errorDescription = "Something went wrong on our end. Please try again later.";
         }
+
+        // Track failed form submission
+        trackFormSubmit({
+          form_type: 'lead_signup',
+          status: 'error',
+          error_code: status,
+          error_message: errorDescription,
+        });
 
         toast({
           title: errorTitle,
@@ -84,6 +167,13 @@ export function LeadSignupForm() {
         });
       }
     } catch (error) {
+      // Track network error
+      trackFormSubmit({
+        form_type: 'lead_signup',
+        status: 'error',
+        error_type: 'network',
+      });
+
       toast({
         title: "Error",
         description: "Network error. Please check your connection and try again.",
@@ -170,7 +260,11 @@ export function LeadSignupForm() {
 
       <div className="space-y-2">
         <Label htmlFor="issue">What's your biggest issue right now?</Label>
-        <Select required onValueChange={(value) => setFormData(prev => ({ ...prev, issue: value }))}>
+        <Select 
+          required 
+          value={formData.issue}
+          onValueChange={(value) => setFormData(prev => ({ ...prev, issue: value }))}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select an option" />
           </SelectTrigger>
@@ -188,8 +282,8 @@ export function LeadSignupForm() {
         <Button type="submit" disabled={isSubmitting} className="w-full h-12 text-lg font-bold hover:scale-105 transition-transform">
           {isSubmitting ? 'Creating Account...' : 'Create My Booking Form →'}
         </Button>
-        <p className="mt-4 text-center text-xs text-muted-foreground italic">
-          I only contact detailers who actually use the form.
+        <p className="mt-3 text-center text-sm text-muted-foreground">
+          Upon submission, an account will be created with a temporary password. Check your email for secure setup instructions.
         </p>
       </div>
     </form>

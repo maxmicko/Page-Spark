@@ -24,11 +24,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    console.log('Lead signup API called with body:', JSON.stringify(req.body, null, 2))
+    
     const { first_name, business_name, phone, email, city, issue } = req.body
 
-    // Validation
-    if (!first_name || !business_name || !phone || !email || !issue) {
-      return res.status(400).json({ error: 'Missing required fields' })
+    // Validation - check for missing or empty required fields
+    const missingFields: string[] = []
+    
+    if (!first_name || first_name.trim() === '') {
+      missingFields.push('first_name')
+    }
+    if (!business_name || business_name.trim() === '') {
+      missingFields.push('business_name')
+    }
+    if (!phone || phone.trim() === '') {
+      missingFields.push('phone')
+    }
+    if (!email || email.trim() === '') {
+      missingFields.push('email')
+    }
+    if (!issue || issue.trim() === '') {
+      missingFields.push('issue')
+    }
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({ 
+        error: 'Missing required fields',
+        missing_fields: missingFields
+      })
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -62,6 +85,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const userId = userData.user.id
+
+    // Save lead signup data to lead_signups table
+    console.log('Attempting to insert lead signup data:', { first_name, business_name, phone, email, city, issue })
+    
+    const { data: leadSignupData, error: leadSignupError } = await supabase
+      .from('lead_signups')
+      .insert({
+        first_name,
+        business_name,
+        phone,
+        email,
+        city: city || null,
+        issue,
+      })
+      .select()
+      .single()
+
+    if (leadSignupError) {
+      console.error('Lead signup data save error:', leadSignupError)
+      console.error('Error details:', JSON.stringify(leadSignupError, null, 2))
+      // Don't fail the request, but log the error for debugging
+      // The user is still created, which is the most important part
+    } else {
+      console.log('Lead signup data saved successfully:', leadSignupData?.id)
+    }
 
     // Generate password reset link
     const { data: resetData, error: resetError } = await supabase.auth.admin.generateLink({
@@ -128,56 +176,75 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       `,
     }
 
-    await transporter.sendMail(mailOptions)
-
-    // Create customer record
-    const { error: customerError } = await supabase
-      .from('customers')
-      .insert({
-        user_id: userId,
-        first_name,
-        business_name,
-        phone,
-        email,
-        city: city || null,
-        notes: issue,
-        created_at: new Date().toISOString(),
-      })
-
-    if (customerError) {
-      console.error('Customer creation error:', customerError)
-      // Continue anyway
+    try {
+      await transporter.sendMail(mailOptions)
+    } catch (emailError) {
+      console.error('Email sending error:', emailError)
+      // Continue anyway, as user and data are saved
     }
 
-    // Get free plan
-    const { data: freePlan, error: planError } = await supabase
-      .from('plans')
-      .select('id')
-      .eq('name', 'Free')
-      .single()
-
-    if (!planError && freePlan) {
-      // Create subscription
-      const { error: subscriptionError } = await supabase
-        .from('subscriptions')
+    // Optionally create customer record (if customers table exists)
+    try {
+      const { error: customerError } = await supabase
+        .from('customers')
         .insert({
           user_id: userId,
-          plan_id: freePlan.id,
-          status: 'active',
-          current_period_start: new Date().toISOString(),
-          current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+          first_name,
+          business_name,
+          phone,
+          email,
+          city: city || null,
+          notes: issue,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
         })
 
-      if (subscriptionError) {
-        console.error('Subscription creation error:', subscriptionError)
+      if (customerError) {
+        console.error('Customer creation error:', customerError)
+        // Continue anyway
       }
+    } catch (customerTableError) {
+      // Table might not exist, that's okay
+      console.log('Customers table may not exist, skipping customer record creation')
+    }
+
+    // Get free plan and create subscription
+    try {
+      const { data: freePlan, error: planError } = await supabase
+        .from('plans')
+        .select('id')
+        .eq('name', 'Free')
+        .single()
+
+      if (!planError && freePlan) {
+        // Create subscription
+        const { error: subscriptionError } = await supabase
+          .from('subscriptions')
+          .insert({
+            user_id: userId,
+            plan_id: freePlan.id,
+            status: 'active',
+            current_period_start: new Date().toISOString(),
+            current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+
+        if (subscriptionError) {
+          console.error('Subscription creation error:', subscriptionError)
+        }
+      } else if (planError) {
+        console.error('Free plan lookup error:', planError)
+      }
+    } catch (subscriptionError) {
+      // Subscription creation is optional, log but don't fail
+      console.error('Subscription setup error:', subscriptionError)
     }
 
     res.status(201).json({
       message: 'Account created successfully. Check your email for password setup instructions.',
       user_id: userId,
+      lead_signup_id: leadSignupData?.id || null,
+      lead_signup_saved: !!leadSignupData?.id,
     })
 
   } catch (error) {
