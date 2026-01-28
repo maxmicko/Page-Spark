@@ -11,9 +11,13 @@ export default function FreeBookingForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { trackButtonClick } = useActivityTracking();
 
-
   return (
     <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/10 relative">
+      <Helmet>
+        <title>Free Booking Form for Mobile Detailers | OrbitL Dash</title>
+        <meta name="description" content="Get a free booking form built specifically for mobile detailers. Reduce no-shows, save time, and professionalize your business in 2 minutes." />
+        <link rel="canonical" href="https://www.orbitl-dash.us/free-booking-form" />
+      </Helmet>
       {/* Global animated background - spans entire page */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-0 -left-40 w-[350px] h-[350px] bg-primary/50 rounded-full blur-xl animate-blob" />
