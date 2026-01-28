@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/accordion";
 import { motion, AnimatePresence } from "framer-motion";
 import { useActivityTracking } from "@/hooks/use-activity-tracking";
+import { Helmet } from "react-helmet-async";
 
 // Import asset
 import heroImage from "@assets/generated_images/mobile_app_mockup_for_car_wash_management.png";
@@ -677,6 +678,10 @@ const Footer = () => {
 export default function Home() {
   return (
     <div className="min-h-screen font-sans bg-background text-foreground overflow-x-hidden selection:bg-primary/20">
+      <Helmet>
+        <title>OrbitL Dash | Mobile Detailing Management Software</title>
+        <meta name="description" content="OrbitL Dash helps mobile detailers eliminate wasted driving time, prevent no-shows, and protect their income with smart scheduling and route optimization." />
+      </Helmet>
       <Navbar />
       <Hero />
       <WhoThisIsFor />
