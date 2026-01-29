@@ -9,10 +9,10 @@ const TRACK_ACTIVITY_URL = `${SUPABASE_URL}/functions/v1/track-activity`
 const getSessionId = () => {
   let sessionId = localStorage.getItem('session_id')
   if (!sessionId) {
-    sessionId = crypto.randomUUID()
+    sessionId = Math.random().toString(36).substr(2, 9)
     localStorage.setItem('session_id', sessionId)
   }
-  return sessionId
+  return sessionId!
 }
 
 const sendActivity = async (eventType: string, eventData?: any) => {
