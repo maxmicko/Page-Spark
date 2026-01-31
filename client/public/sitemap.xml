@@ -1,87 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <url>
     <loc>https://orbitl-dash.us/</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-01-31</lastmod>
   </url>
-  <url>
-    <loc>https://orbitl-dash.us/about</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+
   <url>
     <loc>https://orbitl-dash.us/pricing</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <lastmod>2026-01-31</lastmod>
   </url>
-  <url>
-    <loc>https://orbitl-dash.us/contact</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://orbitl-dash.us/careers</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://orbitl-dash.us/signup</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://orbitl-dash.us/form-builder</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
+
   <url>
     <loc>https://orbitl-dash.us/free-booking-form</loc>
-    <lastmod>2026-01-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <lastmod>2026-01-31</lastmod>
   </url>
+
   <url>
     <loc>https://orbitl-dash.us/best-free-booking-forms</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <lastmod>2026-01-31</lastmod>
   </url>
-  <url>
-    <loc>https://orbitl-dash.us/best-free-booking-forms</loc>
-    <lastmod>2026-01-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://orbitl-dash.us/privacy</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://orbitl-dash.us/terms</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://orbitl-dash.us/refund-policy</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://orbitl-dash.us/subscription</loc>
-    <lastmod>2024-01-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
+
 </urlset>

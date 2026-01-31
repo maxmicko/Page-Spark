@@ -34,12 +34,12 @@ const Navbar = () => {
     }`}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className={`p-1.5 rounded-lg ${scrolled ? "" : ""}`}>
               <img src="/favicon.png" alt="Logo" className="size-8" />
             </div>
             <span className={`text-xl font-bold font-heading ${scrolled ? "text-foreground" : "text-foreground"}`}>OrbitL Dash</span>
-          </div>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
@@ -125,6 +125,10 @@ const Navbar = () => {
 
 export default function BestFreeBookingForms() {
   const { trackButtonClick } = useActivityTracking();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>

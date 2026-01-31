@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://orbitl-dash.us/$1",
+      "permanent": true
+    }
+  ]
+}
