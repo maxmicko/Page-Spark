@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, X, Clock, MessageSquare } from "lucide-react";
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import BookingWizard from "@/components/BookingWizard";
 import { LeadSignupForm } from "@/components/LeadSignupForm";
