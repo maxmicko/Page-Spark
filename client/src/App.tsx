@@ -16,6 +16,7 @@ import Terms from "@/pages/terms";
 import Pricing from "@/pages/pricing";
 import RefundPolicy from "@/pages/refund-policy";
 import Signup from "@/pages/signup";
+import AcceptInvite from "@/pages/accept-invite";
 import Subscription from "@/pages/subscription";
 import FreeBookingForm from "@/pages/free-booking-form";
 import BestFreeBookingForms from "@/pages/best-free-booking-forms";
@@ -26,6 +27,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/signup" component={Signup} />
+      <Route path="/accept-invite" component={AcceptInvite} />
       <Route path="/builder" component={FormBuilder} />
       <Route path="/embed" component={EmbedForm} />
       <Route path="/about" component={About} />

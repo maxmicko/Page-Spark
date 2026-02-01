@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
-import { insertLeadSignupSchema } from '@/shared/schema';
+// Note: Schema import removed as it's not needed for this component
 import { useActivityTracking } from '@/hooks/use-activity-tracking';
 
 interface LeadFormData {
@@ -24,7 +24,14 @@ const issueOptions = [
   { value: "professional", label: "Just want to look more professional" },
 ];
 
-export function LeadSignupForm() {
+interface LeadSignupFormProps {
+  /** When true, uses invite link flow (recommended for lower-intent leads).
+   *  When false/omitted, uses auto-create flow (original, for high-intent leads).
+   */
+  useInviteLink?: boolean;
+}
+
+export function LeadSignupForm({ useInviteLink = true }: LeadSignupFormProps) {
   const { toast } = useToast();
   const { trackFormSubmit } = useActivityTracking();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,13 +96,16 @@ export function LeadSignupForm() {
          console.log('Lead signup data saved directly to DB:', directSaveData?.id)
        }
        
-       const response = await fetch('https://app.orbitl-dash.us/api/lead-signup', {
-         method: 'POST',
-         headers: {
-           'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(formData)
-       });
+        const response = await fetch('https://app.orbitl-dash.us/api/lead-signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            use_invite_link: useInviteLink
+          })
+        });
 
        console.log('Lead signup API response status:', response.status)
        const status = response.status;
@@ -113,13 +123,16 @@ export function LeadSignupForm() {
           lead_signup_saved: !!directSaveData?.id || responseData.lead_signup_saved,
           direct_save_success: !!directSaveData?.id,
           api_save_success: responseData.lead_signup_saved,
+          flow_type: responseData.flow_type,
         });
         
+        // Different success messages based on flow type
+        const isInviteFlow = responseData.flow_type === 'invite_link';
         toast({
-          title: "Account Created!",
-          description: responseData.lead_signup_saved 
-            ? "Check your email for password setup instructions."
-            : "Account created, but there was an issue saving your signup data. Please contact support.",
+          title: isInviteFlow ? "Check Your Email!" : "Account Created!",
+          description: isInviteFlow 
+            ? "We've sent you an invite link to complete your setup. Check your email!"
+            : "Check your email for password setup instructions.",
         });
         // Reset form
         setFormData({
@@ -280,10 +293,14 @@ export function LeadSignupForm() {
 
       <div className="pt-2">
         <Button type="submit" disabled={isSubmitting} className="w-full h-12 text-lg font-bold hover:scale-105 transition-transform">
-          {isSubmitting ? 'Creating Account...' : 'Create My Booking Form →'}
+          {isSubmitting 
+            ? (useInviteLink ? 'Sending Invite...' : 'Creating Account...') 
+            : (useInviteLink ? 'Get My Invite Link →' : 'Create My Booking Form →')}
         </Button>
         <p className="mt-3 text-center text-sm text-muted-foreground">
-          Upon submission, an account will be created with a temporary password. Check your email for secure setup instructions.
+          {useInviteLink 
+            ? "We'll send you a secure link to complete your setup. No account created until you confirm."
+            : "Upon submission, an account will be created with a temporary password. Check your email for secure setup instructions."}
         </p>
       </div>
     </form>
