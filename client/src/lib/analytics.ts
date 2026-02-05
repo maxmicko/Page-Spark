@@ -16,7 +16,7 @@ export const initGA = () => {
   document.head.appendChild(script);
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function() {
+  window.gtag = function () {
     window.dataLayer.push(arguments);
   };
 
